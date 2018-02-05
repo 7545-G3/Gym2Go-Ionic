@@ -14,10 +14,16 @@
   
       <ng-map id="map" center="-34.617751,-58.367862">
       
-      <marker position="-34.617751,-58.367862" title="you are here" animation="DROP" on-click="goRopa()"
+      <ion-list>
+        <div ng-repeat="gym in gyms">
+          <marker position="{{gym.lat}},{{gym.lon}}" title="{{gym.name}}" animation="DROP" on-click="map.showInfoWindow('{{gym.name}}')"
+           icon="{url:'img/gym-marker.png',scaledSize:[35,35],origin: [0,0],anchor: [17,35]}"></marker>
+        </div>
+      </ion-list>
+      <marker position="-34.617751,-58.367862" title="you are here" animation="DROP"
       icon="{url:'img/person-marker.png',scaledSize:[30,30],origin: [0,0],anchor: [15,30]}"></marker>
 
-      <marker id="marker1" position="-34.618634,-58.369471" animation="DROP" title="Gym1" on-click="map.showInfoWindow('bar1')"
+      <!--<marker id="marker1" position="-34.618634,-58.369471" animation="DROP" title="Gym1" on-click="map.showInfoWindow('bar1')"
       icon="{url:'img/gym-marker.png',scaledSize:[35,35],origin: [0,0],anchor: [17,35]}"></marker>
 
       <marker position="-34.616321,-58.368526" animation="DROP" title="GymFiuba" on-click="map.showInfoWindow('bar2')"
@@ -30,10 +36,16 @@
       icon="{url:'img/gym-marker.png',scaledSize:[35,35],origin: [0,0],anchor: [17,35]}"></marker>
 
       <marker position="-34.625467,-58.368945" animation="DROP" title="Gym5" on-click="map.showInfoWindow('bar5')" 
-      icon="{url:'img/gym-marker.png',scaledSize:[35,35],origin: [0,0],anchor: [17,35]}"></marker>
+      icon="{url:'img/gym-marker.png',scaledSize:[35,35],origin: [0,0],anchor: [17,35]}"></marker>-->
       
-
-      <info-window id="bar1">
+      <ion-list>
+        <div ng-repeat="gym in gyms">
+          <info-window id="{{gym.name}}">
+            <div ng-non-bindable><h3>{{gym.name}}</h3><p>Paseo Colon 720</p><p><b><a ng-click="onSelectedGym('{{gym.name}}')">Ver Actividades</a></b></p></div>
+          </info-window>
+        </div>
+      </ion-list>
+      <!--<info-window id="bar1">
         <div ng-non-bindable><h3>McGym</h3><p>Paseo Colon 720</p><p><b><a href="#/tab/McGym">Ver Actividades</a></b></p></div>
       </info-window>
       <info-window id="bar2">
@@ -47,7 +59,7 @@
       </info-window>
       <info-window id="bar5">
         <div ng-non-bindable><h3>Gym San Telmo</h3><p>Paseo Colon 720</p><p><b><a href="#/tab/GymST">Ver Actividades</a></b></p></div>
-      </info-window>
+      </info-window>-->
     </ng-map>
      
   </ion-content>

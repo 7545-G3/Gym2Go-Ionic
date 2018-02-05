@@ -1,11 +1,42 @@
 angular.module('gym2go.controllers', [])
 
-  .controller('GymsCtrl', function ($scope) {
+  .controller('GymsCtrl', function ($scope,$state,$ionicPopup,serverJsonRequest,gymData)
+  {
+      $scope.gyms = [  ]
+      $scope.successCallback = function(json)
+      {
+          var gyms = [{name: "Gym1", lat: -34.618634,lon:-58.369471}, 
+                      {name:"Gym2", lat:-34.616321,lon:-58.368526}]
+          gymData.saveGyms(gyms)
+          $scope.gyms = gyms
+      }
+      $scope.errorCallback = function()
+      {
+        $ionicPopup.alert({
+          title: 'Error obteniendo gimnasios'
+        }).then(function(){
 
+        });
+      }
+      $scope.onSelectedGym = function(gymName)
+      {
+         for(var index = 0; index < gymData.getGymsList().length; index++ )
+         {
+           if(gymData.getGymsList()[index].name == gymName )
+           {
+             gymData.addActualWorkingGym(gymName);
+             $state.go("tab.activities");
+             break;
+           }
+         }
+         
+      }
+      serverJsonRequest.get(serverJsonRequest.baseUrl + serverJsonRequest.gymRequests,$scope.successCallback,$scope.errorCallback)
   })
 
   //Proteinas
-  .controller('SuppsCtrl', function ($scope, Chats, $ionicPopup,sharedCartService) {
+  .controller('SuppsCtrl', function ($scope, Chats, $ionicPopup,sharedCartService, gymData) 
+  {
     $scope.groups = [];
     $scope.compras={};
     $scope.gyms = ["McGym","Fiuba","Belgrano","Independencia","San Telmo"];

@@ -168,3 +168,79 @@ angular.module('gym2go.services', [])
       getCurrentActivity: getCurrentActivity
     }
   })
+  .factory('serverJsonRequest',function()
+  {
+    function request(url, method, jsonData, success, error)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() 
+        { 
+          if ( xmlHttp.readyState == 4 && xmlHttp.status < 400 )
+          {
+            success(JSON.parse(xmlHttp.responseText));
+          }
+          else if( xmlHttp.readyState == 4 )
+          {
+            error()
+          }
+            
+        }
+        xmlHttp.open(method,url, true); // true for asynchronous
+        xmlHttp.setRequestHeader('Content-type','application/json; charset=utf-8'); 
+        xmlHttp.send(jsonData)
+    }
+
+    function getSendingData(url, jsonData, successCallback, errorCallback)
+    {
+        request(url,"GET",jsonData,successCallback,errorCallback)
+    }
+
+    function get(url,successCallback,errorCallback)
+    {
+        request(url,"GET",null,successCallback,errorCallback)
+    }
+    function put(url, jsonData, successCallback, errorCallback)
+    {
+        request(url,"PUT",jsonData,successCallback,errorCallback)
+    }
+
+    return {
+      getSendingData: getSendingData,
+      get: get,
+      put: put,
+      gymRequests: "/gyms",
+      userRequests: "/users",
+      adminRequests: "/admin-users",
+      baseUrl: "https://gym2go-server.herokuapp.com/api"
+    }
+  })
+    .factory("gymData",function(){
+      var container = this
+      container.usingGym = null
+      container.gyms = []
+      function addActualWorkingGym(gym)
+      {
+          container.usingGym = gym
+      }
+
+      function saveGyms(gyms)
+      {
+          container.gyms = gyms
+      }
+
+      function getGymsList()
+      {
+          return container.gyms
+      }
+
+      function getActualGym()
+      {
+          return container.usingGym
+      }
+      return {
+        saveGyms: saveGyms,
+        addActualWorkingGym: addActualWorkingGym,
+        getGymsList: getGymsList,
+        getActualGym: getActualGym
+      }
+    })

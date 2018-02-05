@@ -64,6 +64,16 @@ app.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
     }
   })
 
+.state('tab.activities', {
+    url: '/gym',
+    views: {
+      'gyms-tab': {
+        templateUrl: 'templates/tab-activities.html',
+        controller: 'SingleGymCtrl'
+      }
+    }
+  })
+
   .state('tab.McGym', {
     url: '/McGym',
     views: {

@@ -1,0 +1,53 @@
+<ion-view view-title="Gym Belgrano">
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear ion-log-out" ng-click="logout()">
+    </button>
+  </ion-nav-buttons>
+  <ion-content class="background">
+    <div class="gym-titles">
+      <a class="gym-header1">Gym Belgrano</a>
+      <br>
+      <a class="gym-header2">Gimnasio</a>
+    </div>
+    <img class="gym-img" src="img/gym-belgrano.png" />
+  	<ion-list>
+      <div ng-repeat="activity in activities">
+        <ion-item class="item-stable"
+                  ng-click="toggleActivity(activity)"
+                  ng-class="{active: isActivityShown(activity)}">
+          <i class="icon" ng-class="isActivityShown(activity) ? 'ion-minus' : 'ion-plus'"></i>
+          &nbsp;
+          {{activity.name}} ({{activity.price}})
+        </ion-item>
+        <ion-item class="item-accordion"
+                  ng-show="isActivityShown(activity)">
+          <div class="row">
+            <div class="col">
+              <a class="button button-outline icon-left ion-calendar button-dark float-left" ng-click="openDatePicker()">Fecha</a>
+            </div>
+            <div class="col">
+              <ion-label class="float-right" ng-if="selectedDate"><b>{{selectedDate}}</b></ion-label>
+            </div>
+          </div>
+          <div class="padding">
+            <label class="item item-input item-select">
+            <div class="input-label">
+              <b>Hora:</b>
+            </div>
+            <select name="hora">
+              <option>16:00</option>
+              <option selected>18:30</option>
+              <option>19:00</option>
+            </select>
+            </label>
+          </div>
+            <div class="col">
+              <button class="button icon-left ion-ios-cart button-balanced float-right" ng-click="addActivity(activity)">  Comprar
+              </button>
+            </div>
+          </div>
+        </ion-item>
+      </div>
+    </ion-list>
+  </ion-content>
+</ion-view>
