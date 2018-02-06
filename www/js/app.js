@@ -49,7 +49,14 @@ app.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
   .state('login', {
     url: '/login',
     templateUrl: 'templates/login.html',
-    controller: 'LoginCtrl'
+    controller: 'LoginCtrl',
+	  
+		resolve:{
+			"check":function($location){  
+				if(sessionStorage.getItem('loggedin_username')){ $location.path('/gyms');   }
+				else									 {  $location.path('/login');   }
+			}
+		}
   })
 
   // Each tab has its own nav history stack:
@@ -151,6 +158,12 @@ app.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
         controller: 'RopaCtrl'
       }
     }
+  })
+
+  .state('signup', {
+    url: '/signup',
+    templateUrl: 'templates/signup.html',
+    controller: 'signupCtrl'
   });
 
 

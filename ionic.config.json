@@ -11,5 +11,9 @@
     "www/**/*",
     "!www/lib/**/*",
     "!www/**/*.map"
-  ]
+  ],
+"proxies": [{
+    "path": "/api",
+    "proxyUrl": "https://gym2go-server.herokuapp.com/api/"
+  }]
 }
