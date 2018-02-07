@@ -149,8 +149,11 @@ angular.module('gym2go.controllers', [])
     .controller('LoginCtrl', function($scope, $state, $http, $ionicPopup, $ionicHistory) {
         $scope.loginData = {};
         $scope.doLogin = function() {
-	str = "api/users?email="+$scope.loginData.username;
-            $http.get(str)
+	var str = "api/users/login";
+            $http.post(str, {
+                    email: $scope.loginData.username,
+                    password: $scope.loginData.password
+                })
                 .success(function(response) { // if login request is Accepted
 
                     // records is the 'server response array' variable name.
@@ -184,6 +187,7 @@ angular.module('gym2go.controllers', [])
         };
     })
     .controller('signupCtrl', function($scope, $http, $ionicPopup, $state, $ionicHistory) {
+        $scope.tarjetas = ["Visa", "Amex", "Mastercard"];
         $scope.signup = function(data) {
             var link = 'api/users';
             //using http post as we are passing password.
@@ -192,6 +196,12 @@ angular.module('gym2go.controllers', [])
                     password: data.password
                 })
 		.success(function(response) { $state.go('login');})
+		.error(function(response) { //if login failed
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Error de registración',
+                        template: response.message
+                    });
+                });
                 /*.then(function(res) { //if a response is recieved from the server.
                     $scope.response = res.data.result; //contains Register Result				
                     //Shows the respective popup and removes back link
