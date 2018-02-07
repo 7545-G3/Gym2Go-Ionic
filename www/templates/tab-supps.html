@@ -7,8 +7,8 @@
     <div class="list list-inset">
       <label class="item item-input item-select">
         <div class="input-label">Gym</div>
-	<select ng-model="data.index" ng-options="gyms.indexOf(item) as item for item in gyms">
-        </select>
+	<select ng-model="data.index" ng-options="gyms.indexOf(item) as item for item in gyms" ng-change="unitChanged()">
+  </select>
       </label>
     </div>
     <ion-list>

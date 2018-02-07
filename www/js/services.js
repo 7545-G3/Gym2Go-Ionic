@@ -201,7 +201,7 @@ angular.module('gym2go.services', [])
     }
     function put(url, jsonData, successCallback, errorCallback)
     {
-        request(url,"PUT",jsonData,successCallback,errorCallback)
+        request(url,"POST",jsonData,successCallback,errorCallback)
     }
 
     return {
