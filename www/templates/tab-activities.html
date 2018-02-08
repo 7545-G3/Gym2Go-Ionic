@@ -17,7 +17,7 @@
                   ng-class="{active: isActivityShown(activity)}">
           <i class="icon" ng-class="isActivityShown(activity) ? 'ion-minus' : 'ion-plus'"></i>
           &nbsp;
-          {{activity.name}} ({{activity.price}})
+          {{activity.name}} (${{activity.price}})
         </ion-item>
         <ion-item class="item-accordion"
                   ng-show="isActivityShown(activity)">

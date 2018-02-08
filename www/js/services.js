@@ -55,7 +55,35 @@ angular.module('gym2go.services', [])
     cartObj.cart = []; 		// array of product items
     cartObj.total_amount = 0; // total cart amount
     cartObj.total_qty = 0;    // total cart qty
+    cartObj.gymPass = null
 
+    cartObj.startNewGymPass = function(gymName,activity, price, day, time)
+    {
+      cartObj.gymPass = {
+        gym: gymName,
+        activity:  {
+                    name: activity,
+                    price: price,
+                    day: day,
+                    time: time
+                  },
+        trainer: null,
+        clothes: []
+      }
+    }
+
+    cartObj.setGymPassTrainer = function(trainerName, price)
+    {
+      cartObj.gymPass.trainer = {
+        name: trainerName,
+        price: price
+      } 
+    }
+
+    cartObj.addGymPassClothes = function( clotheName, price )
+    {
+      cartObj.gymPass.clothes.push({name: clotheName, price: price})
+    }
 
     cartObj.cart.add = function (id, image, name, price, qty,gym,date,pt,ropa) {
      /* if (cartObj.cart.find(id) != -1) {  //find() is declared in the bottom.

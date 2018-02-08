@@ -10,17 +10,17 @@ angular.module('gym2go.controllers', [])
                         lat: -34.618634, lon:-58.369471, 
                         activities:[ {
                                         name: "Pase Gimnasio",
-                                        price: "$50",
+                                        price: 50,
                                         hours: ["16:00","18:30"]
                                     },
                                     {
                                         name: "Clase MMA",
-                                        price: "$30",
+                                        price: 30,
                                         hours: ["16:00", "19:00"]
                                     },
                                     {
                                         name: "Clase Zumba",
-                                        price: "$20",
+                                        price: 20,
                                         hours: ["18:30","19:00"]
                                     }], 
                         products:[ { name: "Pepa", 
@@ -29,14 +29,27 @@ angular.module('gym2go.controllers', [])
                                      imageUrl: "img/Proteina1.jpg", //should be base64
                                      type: "Proteinas"
                                     }],
-                        trainers:[] 
+                        trainers: [ {
+                                        name: "Juan Perez",
+                                        age: "29 años",
+                                        profileImage: "img/personal1.png",
+                                        speciality: "Musculación en general",
+                                        price: 50
+                                    },
+                                    {
+                                        name: "Federico Romo",
+                                        age: "35 años",
+                                        profileImage: "img/personal2.jpg",
+                                        speciality: "Running",
+                                        price: 50
+                                    }]
                       } , 
                       {
                         name:"Gym2", 
                         lat:-34.616321,lon:-58.368526,
                         activities:[ {
                                         name: "Pase Gimnasio",
-                                        price: "$50",
+                                        price: 50,
                                         hours: ["16:00","18:30","19:00"]
                                     } ],
                         products:[ { name: "Pepa", 
@@ -45,7 +58,20 @@ angular.module('gym2go.controllers', [])
                                      imageUrl: "img/Proteina1.jpg", //should be base64
                                      type: "Aminoacidos"
                                     }],
-                        trainers:[] 
+                        trainers:[{
+                                        name: "Carla Mi",
+                                        age: "31 años",
+                                        profileImage: "img/personal3.jpeg",
+                                        speciality: "Boxeo",
+                                        price: 50
+                                    },
+                                    {
+                                        name: "Lucas Gonzalez",
+                                        age: "28 años",
+                                        profileImage: "img/personal4.jpg",
+                                        speciality: "Musculación en general",
+                                        price: 50
+                                    }] 
                       }]
           gymData.saveGyms(gyms)
           $scope.gyms = gyms
@@ -111,8 +137,6 @@ angular.module('gym2go.controllers', [])
     if( gymData.getGymsList().length == 0 )
     { 
         serverJsonRequest.get(serverJsonRequest.baseUrl + serverJsonRequest.gymRequests,$scope.successCallback,$scope.errorCallback)
-    } else {
-        console.log( gymData.getGymsList() )
     }
 
     function getListOfGymNames()
@@ -151,7 +175,7 @@ angular.module('gym2go.controllers', [])
                 precio: gym.products[i].price,
                 cantidad: 0
             }
-            console.log("adding to group " + gym.products[i].type + " the item: " + item )
+            
             if(groupIndex != -1)
             {
                 $scope.groups[groupIndex].items.push(item)
@@ -168,7 +192,7 @@ angular.module('gym2go.controllers', [])
     {   
         $scope.groups = [];
         var gyms = gymData.getGymsList();
-        console.log(indexGym)
+        
         if( gyms.length >= indexGym + 1 && indexGym >= 0 )
         {
             prepareGroups(gyms[indexGym])
@@ -417,7 +441,7 @@ angular.module('gym2go.controllers', [])
         };
     })
 
-    .controller('SingleGymCtrl', function($scope, $state, $ionicPopup, ionicDatePicker, gymData) {
+    .controller('SingleGymCtrl', function($scope, $state, $ionicPopup, ionicDatePicker, gymData, sharedCartService) {
         $scope.goBack = function() 
         {
             $state.go("tab.gyms")
@@ -460,12 +484,16 @@ angular.module('gym2go.controllers', [])
         $scope.addActivity = function(activity) {
             $ionicPopup.confirm({
                     title: 'Confirmar selección',
-                    template: '<div><p><strong>' + activity.name + '</strong></p>Precio: ' + activity.price + '<br>Fecha: ' + $scope.selectedDate + '<br>Hora: 19:00hs</div>',
+                    template: '<div><p><strong>' + activity.name + '</strong></p>Precio: ' + activity.price + '<br>Fecha: ' + $scope.selectedDate + 
+                    '<br>Hora: ' + activity.hours[activity.hoursId] + 'hs</div>',
                     okText: 'Continuar',
                     cancelText: 'Cancelar'
                 })
                 .then(function(confirmed) {
-                    if (confirmed) {
+                    if (confirmed) 
+                    {
+                        //TODO add to cart the activty and hour
+                        sharedCartService.startNewGymPass(getGymName(),activity.name, activity.price, $scope.selectedDate, activity.hours[activity.hoursId])
                         $scope.goToPersonalTrainerList();
                     }
                 })
@@ -473,7 +501,7 @@ angular.module('gym2go.controllers', [])
 
         var ipObj1 = {
             callback: function(val) { //Mandatory
-                console.log('Return value from the datepicker popup is : ' + val, new Date(val));
+                
                 var date = new Date(val);
 
                 var day = date.getDate();
@@ -501,36 +529,8 @@ angular.module('gym2go.controllers', [])
     })
 
     //Personal Trainers
-    .controller('PersonalCtrl', function($scope, $ionicPopup, $state) {
-        $scope.trainers = [{
-                name: "Juan Perez",
-                age: "29 años",
-                profileImage: "img/personal1.png",
-                speciality: "Musculación en general",
-                price: 50
-            },
-            {
-                name: "Federico Romo",
-                age: "35 años",
-                profileImage: "img/personal2.jpg",
-                speciality: "Running",
-                price: 50
-            },
-            {
-                name: "Carla Mi",
-                age: "31 años",
-                profileImage: "img/personal3.jpeg",
-                speciality: "Boxeo",
-                price: 50
-            },
-            {
-                name: "Lucas Gonzalez",
-                age: "28 años",
-                profileImage: "img/personal4.jpg",
-                speciality: "Musculación en general",
-                price: 50
-            }
-        ];
+    .controller('PersonalCtrl', function($scope, $ionicPopup, $state, gymData, sharedCartService) {
+        $scope.trainers = gymData.getActualGym().trainers
         /*
          * if given group is the selected group, deselect it
          * else, select the given group
@@ -544,7 +544,8 @@ angular.module('gym2go.controllers', [])
                 })
                 .then(function(confirmed) {
                     if (confirmed) {
-                        // TODO - Add redirection to clothes selection screen
+                        // TODO - Add trainer to cart if chosen
+                        sharedCartService.setGymPassTrainer(personal.name, personal.price)
                         $state.go("tab.clothes")
                     }
                 })
@@ -562,6 +563,11 @@ angular.module('gym2go.controllers', [])
         $scope.itemsAlquilados = [];
         //global variable shared between different pages.
         var cart = sharedCartService.cart;
+
+        function makeGymGroups()
+        {
+
+        }
 
         $scope.groups[0] = {
             name: "Remeras",
@@ -675,12 +681,68 @@ angular.module('gym2go.controllers', [])
 
             confirmPopup.then(function(res) {
                 if (res) {
+                    sharedCartService.addGymPassClothes(item.name, item.precio)
                     $scope.cantidadAlquilados = $scope.cantidadAlquilados + 1;
                     $scope.totalAlquilados = $scope.totalAlquilados + item.precio;
                     $scope.itemsAlquilados.push(item);
                 }
             });
         };
+
+        function calculatePassPrice()
+        {
+            var total = 0;
+            total =+ sharedCartService.gymPass.activity.price
+            if( sharedCartService.gymPass.trainer != null )
+            {
+                total += sharedCartService.gymPass.trainer.price
+            }
+            for( var i = 0; i < sharedCartService.gymPass.clothes.length; i++ )
+            {
+                total += sharedCartService.gymPass.clothes[i].price;
+            }
+            return total;
+        }
+
+        function getGymName()
+        {
+            return sharedCartService.gymPass.gym
+        }
+
+        function getActivityName()
+        {
+            return sharedCartService.gymPass.activity.name;
+        }
+
+        function getActivtyDescription()
+        {
+            var activity = sharedCartService.gymPass.activity;
+            return "Fecha y hora: " + activity.day +  " a las " + activity.time + "hs"
+        }
+
+        function getPersonalTrainer()
+        {
+            var trainer = sharedCartService.gymPass.trainer;
+            if( trainer != null )
+            {
+                return trainer.name
+            }
+            return "-"
+        }
+
+        function getClothesList()
+        {
+            if ( sharedCartService.gymPass.clothes.length == 0 )
+            {
+                return "-"
+            }
+            var list = ""
+            for( var i = 0; i < sharedCartService.gymPass.clothes.length; i++ )
+            {
+                list += sharedCartService.gymPass.clothes[i].name + " / ";
+            }
+            return list.slice(0,list.length - 3);
+        }
 
         $scope.continue = function() {
             var confirmPopup = $ionicPopup.confirm({
@@ -691,6 +753,7 @@ angular.module('gym2go.controllers', [])
             });
             confirmPopup.then(function(res) {
                 if (res) {
+                    
                     $ionicHistory.clearHistory();
                     $state.go('tab.cart', {
                         fromActivity: true
@@ -698,7 +761,10 @@ angular.module('gym2go.controllers', [])
                     $scope.itemsAlquilados = [];
                     $scope.cantidadAlquilados = 0;
                     $scope.totalAlquilados = 0;
-                    cart.add(20, "img/Barcode.jpg", "Pase Gimnasio", 120, 1, "Belgrano", "Fecha y hora:23/11/2017 a las 19:00hs", "Personal trainer:Juan Perez", "Ropa:Remera Dry Fit - Hombre / Short Masculino Negro");
+                    //Add to cart the activity
+
+                    cart.add(20, "img/Barcode.jpg", getActivityName(), calculatePassPrice(), 1, getGymName(), getActivtyDescription(),
+                     "Personal trainer: " + getPersonalTrainer(), "Ropa: " + getClothesList());
                 }
             })
         }
