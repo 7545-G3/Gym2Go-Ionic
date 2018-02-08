@@ -8,7 +8,21 @@ angular.module('gym2go.controllers', [])
           var gyms = [{
                         name: "Gym1", 
                         lat: -34.618634, lon:-58.369471, 
-                        activities:[], 
+                        activities:[ {
+                                        name: "Pase Gimnasio",
+                                        price: "$50",
+                                        hours: ["16:00","18:30"]
+                                    },
+                                    {
+                                        name: "Clase MMA",
+                                        price: "$30",
+                                        hours: ["16:00", "19:00"]
+                                    },
+                                    {
+                                        name: "Clase Zumba",
+                                        price: "$20",
+                                        hours: ["18:30","19:00"]
+                                    }], 
                         products:[ { name: "Pepa", 
                                      description: "pega duro",
                                      price: 100,
@@ -20,7 +34,11 @@ angular.module('gym2go.controllers', [])
                       {
                         name:"Gym2", 
                         lat:-34.616321,lon:-58.368526,
-                        activities:[], 
+                        activities:[ {
+                                        name: "Pase Gimnasio",
+                                        price: "$50",
+                                        hours: ["16:00","18:30","19:00"]
+                                    } ],
                         products:[ { name: "Pepa", 
                                      description: "pega duro",
                                      price: 100,
@@ -46,7 +64,7 @@ angular.module('gym2go.controllers', [])
          {
            if(gymData.getGymsList()[index].name == gymName )
            {
-             gymData.addActualWorkingGym(gymName);
+             gymData.addActualWorkingGym(gymData.getGymsList()[index]);
              $state.go("tab.activities");
              break;
            }
@@ -56,6 +74,8 @@ angular.module('gym2go.controllers', [])
       if( gymData.getGymsList().length == 0 )
       {
          serverJsonRequest.get(serverJsonRequest.baseUrl + serverJsonRequest.gymRequests,$scope.successCallback,$scope.errorCallback)
+      } else {
+          $scope.gyms = gymData.getGymsList();
       }
       
   })
@@ -378,29 +398,34 @@ angular.module('gym2go.controllers', [])
         };
     })
 
-    .controller('SingleGymCtrl', function($scope, $state, $ionicPopup, ionicDatePicker) {
-        $scope.goBack = function() {
+    .controller('SingleGymCtrl', function($scope, $state, $ionicPopup, ionicDatePicker, gymData) {
+        $scope.goBack = function() 
+        {
             $state.go("tab.gyms")
         };
 
-        $scope.goToPersonalTrainerList = function() {
+        $scope.goToPersonalTrainerList = function() 
+        {
             $state.go("tab.personalTrainerList")
         }
 
-        $scope.activities = [{
-                name: "Pase Gimnasio",
-                price: "$50"
-            },
-            {
-                name: "Clase MMA",
-                price: "$30"
-            },
-            {
-                name: "Clase Zumba",
-                price: "$20"
-            }
+        $scope.activities = getGymActivities()
+        $scope.gymName = getGymName()
 
-        ];
+        function getGymActivities()
+        {
+            var activities = gymData.getActualGym().activities;
+            for( var i = 0; i < activities.length; i++ )
+            {
+                activities[i].hoursId = 0;
+            }
+            return activities
+        }
+
+        function getGymName()
+        {
+            return gymData.getActualGym().name; 
+        }
 
         $scope.toggleActivity = function(activity) {
             if ($scope.isActivityShown(activity)) {

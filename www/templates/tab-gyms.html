@@ -6,7 +6,8 @@
   <ion-content>
     <script>
       app.module('ngMap').run(function($rootScope, NgMap) {        
-        NgMap.getMap().then(function(map) {
+        NgMap.getMap().then(function(map) 
+        {
           $rootScope.map = map;
         });
       });
@@ -41,7 +42,7 @@
       <ion-list>
         <div ng-repeat="gym in gyms">
           <info-window id="{{gym.name}}">
-            <div ng-non-bindable><h3>{{gym.name}}</h3><p>Paseo Colon 720</p><p><b><a ng-click="onSelectedGym('{{gym.name}}')">Ver Actividades</a></b></p></div>
+            <div><h3>{{gym.name}}</h3><p>Paseo Colon 720</p><p><b><a ng-click="onSelectedGym('{{gym.name}}')">Ver Actividades</a></b></p></div>
           </info-window>
         </div>
       </ion-list>

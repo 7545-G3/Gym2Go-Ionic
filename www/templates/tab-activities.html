@@ -1,11 +1,11 @@
-<ion-view view-title="Gym Belgrano">
+<ion-view view-title="{{gymName}}">
   <ion-nav-buttons side="right">
     <button class="button button-icon button-clear ion-log-out" ng-click="logout()">
     </button>
   </ion-nav-buttons>
   <ion-content class="background">
     <div class="gym-titles">
-      <a class="gym-header1">Gym Belgrano</a>
+      <a class="gym-header1" ng-bind="gymName"></a>
       <br>
       <a class="gym-header2">Gimnasio</a>
     </div>
@@ -34,10 +34,7 @@
             <div class="input-label">
               <b>Hora:</b>
             </div>
-            <select name="hora">
-              <option>16:00</option>
-              <option selected>18:30</option>
-              <option>19:00</option>
+            <select name="hora" ng-model="activity.hoursId" ng-options="activity.hours.indexOf(item) as item for item in activity.hours">
             </select>
             </label>
           </div>
