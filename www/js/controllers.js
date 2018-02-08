@@ -146,9 +146,13 @@ angular.module('gym2go.controllers', [])
         }
     })
 
-    .controller('LoginCtrl', function($scope, $state, $http, $ionicPopup, $ionicHistory) {
+    .controller('LoginCtrl', function($scope, $ionicLoading, $state, $http, $ionicPopup, $ionicHistory) {
         $scope.loginData = {};
         $scope.doLogin = function() {
+
+		$ionicLoading.show({
+			 template: 'Loading...'
+		      });
 	var str = "api/users/login";
             $http.post(str, {
                     email: $scope.loginData.username,
@@ -175,10 +179,13 @@ angular.module('gym2go.controllers', [])
                     });
 
 
+		$ionicLoading.hide();
                     $state.go("tab.gyms")
 
 
                 }).error(function(response) { //if login failed
+
+		$ionicLoading.hide();
                     var alertPopup = $ionicPopup.alert({
                         title: 'Error de Login',
                         template: response.message
@@ -186,17 +193,29 @@ angular.module('gym2go.controllers', [])
                 });
         };
     })
-    .controller('signupCtrl', function($scope, $http, $ionicPopup, $state, $ionicHistory) {
+    .controller('signupCtrl', function($scope, $http, $ionicPopup, $ionicLoading, $state, $ionicHistory) {
         $scope.tarjetas = ["Visa", "Amex", "Mastercard"];
         $scope.signup = function(data) {
+
+		$ionicLoading.show({
+			 template: 'Creando cuenta...'
+		      });
             var link = 'api/users';
             //using http post as we are passing password.
             $http.post(link, {
                     email: data.username,
                     password: data.password
                 })
-		.success(function(response) { $state.go('login');})
+		.success(function(response) { 
+			setTimeout(25000)
+			$ionicLoading.hide();
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Cuenta Creada',
+                        template: "Tu cuenta ha sido creada correctamente."
+                    });
+			$state.go('login');})
 		.error(function(response) { //if login failed
+			$ionicLoading.hide();
                     var alertPopup = $ionicPopup.alert({
                         title: 'Error de registración',
                         template: response.message

@@ -14,7 +14,7 @@
 		    <select ng-model="data.index" ng-options="tarjetas.indexOf(item) as item for item in tarjetas"></select>
                 </label>
                 <label class="item item-input">
-		    <input type="number" placeholder="Número de Tarjeta" ng-model="data.numerotc">
+		    <input type="text" pattern="[0-9]*" maxlength="16" placeholder="Número de Tarjeta" ng-model="data.numerotc">
 		</label>
                 <label class="item item-input">
 		    <input type="number" placeholder="Código de Seguridad" ng-model="data.code">
