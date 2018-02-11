@@ -4,26 +4,29 @@
   </ion-nav-back-button>
 </ion-nav-bar>    <ion-content padding="'true'" scroll="false" class="has-header">
     <img class="img-logo" src="img/gym5.png" />
-        <form class="list">
+        <form class="list" name="signInForm">
             <ion-list>
                 <label class="item item-input">
-                    <input type="email" placeholder="Username" ng-model="data.username">
+                    <input type="email" placeholder="E-mail" ng-model="data.username" required>
                 </label>
                 <label class="item item-input">
-                    <input type="password" placeholder="Password" ng-model="data.password">
+                    <input type="password" placeholder="Contraseña" ng-model="data.password" required>
+                </label> 
+                <label class="item item-input">
+                    <input type="password" placeholder="Repetir contraseña" required validateEqual="password">
                 </label>
                 <label class="item item-input item-select">
 		    <div class="input-label">Tarjeta</div>
-		    <select ng-model="data.index" ng-options="tarjetas.indexOf(item) as item for item in tarjetas"></select>
+		    <select ng-model="data.index" ng-options="tarjetas.indexOf(item) as item for item in tarjetas" required></select>
                 </label>
                 <label class="item item-input">
-		    <input type="text" pattern="\d*" maxlength="16" placeholder="Número de Tarjeta" ng-model="data.numerotc">
+		    <input type="text" pattern="\d*" maxlength="16" placeholder="Número de Tarjeta" ng-model="data.numerotc" required>
 		</label>
                 <label class="item item-input">
-		    <input type="text" placeholder="Código de Seguridad" ng-model="data.code" pattern="\d*" maxlength="3">
+		    <input type="text" placeholder="Código de Seguridad" ng-model="data.code" pattern="\d*" maxlength="3" required>
 		</label>
             </ion-list>
-            <button ng-click="signup(data)" class="button button-positive button-block ">Sign up</button>
+            <button ng-click="signup(data)" class="button button-positive button-block " ng-disabled="signInForm.$invalid">Registrarse</button>
         </form>
     </ion-content>
 </ion-view>
