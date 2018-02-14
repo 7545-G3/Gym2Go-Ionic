@@ -355,7 +355,7 @@ angular.module('gym2go.controllers', [])
         };
     })
     .controller('signupCtrl', function($scope, $http, $ionicPopup, $ionicLoading, $state, $ionicHistory) {
-        $scope.tarjetas = ["Visa", "Amex", "Mastercard"];
+        $scope.Tarjetas = ["Visa", "Amex", "Mastercard"];
         $scope.signup = function(data) {
 
             $ionicLoading.show({
