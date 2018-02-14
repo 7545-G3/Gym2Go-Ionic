@@ -365,7 +365,10 @@ angular.module('gym2go.controllers', [])
             //using http post as we are passing password.
             $http.post(link, {
                     email: data.username,
-                    password: data.password
+                    password: data.password,
+                    creditCardBrand: data.item,
+                    creditCardNumber: data.numerotc,
+                    creditCardCode: data.code
                 })
                 .success(function(response) {
                     setTimeout(25000)
