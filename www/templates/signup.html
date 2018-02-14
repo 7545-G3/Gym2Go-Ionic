@@ -1,4 +1,4 @@
-<ion-view title="Registración">
+<ion-view title="Registro">
 <ion-nav-bar class="bar-stable" align-title="center">
   <ion-nav-back-button class="button-icon ion-chevron-left">
   </ion-nav-back-button>
@@ -17,13 +17,13 @@
                 </label>
                 <label class="item item-input item-select">
 		    <div class="input-label">Tarjeta</div>
-		    <select ng-model="data.index" ng-options="tarjetas.indexOf(item) as item for item in tarjetas" required></select>
+		    <select ng-model="data.item" ng-options="item as item for item in tarjetas" required></select>
                 </label>
                 <label class="item item-input">
-		    <input type="text" pattern="\d*" maxlength="16" placeholder="Número de Tarjeta" ng-model="data.numerotc" required>
+		    <input type="text" pattern="\d*" minlength="16" maxlength="16" placeholder="Número de Tarjeta" ng-model="data.numerotc" required>
 		</label>
                 <label class="item item-input">
-		    <input type="text" placeholder="Código de Seguridad" ng-model="data.code" pattern="\d*" maxlength="3" required>
+		    <input type="text" placeholder="Código de Seguridad" ng-model="data.code" pattern="\d*" minlength="3" maxlength="3" required>
 		</label>
             </ion-list>
             <button ng-click="signup(data)" class="button button-positive button-block " ng-disabled="signInForm.$invalid">Registrarse</button>
