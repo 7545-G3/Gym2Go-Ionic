@@ -336,7 +336,8 @@ angular.module('gym2go.controllers', [])
                     } else {
                         $scope.user_details = response;
                         //stores the data in the session. if the user is logged in, then there is no need to show login again.
-                        localStorage.setItem('loggedin_name', response.email);
+                        localStorage.setItem('email', response.email);
+                        localStorage.setItem('idusuario', response._id);
                         $ionicHistory.nextViewOptions({
                             disableAnimate: true,
                             disableBack: true
@@ -390,7 +391,8 @@ angular.module('gym2go.controllers', [])
     })
     .controller('AppCtrl', function($scope, $state) {
         $scope.logout = function() {
-            localStorage.removeItem('loggedin_name');
+            localStorage.removeItem('email');
+            localStorage.removeItem('idusuario');
             $state.go("login")
         };
     })
