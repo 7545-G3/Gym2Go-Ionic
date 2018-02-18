@@ -4,42 +4,135 @@ angular.module('gym2go.controllers', [])
         $scope.successCallback = function(json) {
             var gyms = [{
                     name: "Gym1",
+                    address: "Av. Paseo Colon 756",
                     lat: -34.618634,
                     lon: -58.369471,
-                    activities: [{
-                            name: "Pase Gimnasio",
+                    validated: true,
+                    activities: [
+                        {  
+                            id: 1,
+                            description: "Pase Gimnasio",
                             price: 50,
-                            hours: ["16:00", "18:30"]
+                            schedules: ["16:00", "18:30"]
                         },
                         {
-                            name: "Clase MMA",
+                            id: 2,
+                            description: "Clase MMA",
                             price: 30,
-                            hours: ["16:00", "19:00"]
+                            schedules: ["16:00", "19:00"]
                         },
                         {
-                            name: "Clase Zumba",
+                            id: 3,
+                            description: "Clase Zumba",
                             price: 20,
-                            hours: ["18:30", "19:00"]
+                            schedules: ["18:30", "19:00"]
                         }
                     ],
-                    products: [{
+                    products: [
+                    {
+                        id: 1,
                         name: "Pepa",
-                        description: "pega duro",
+                        description: "1Kg",
                         price: 100,
+                        category: "Proteinas",
+                        brand: "Supp",
                         imageUrl: "img/Proteina1.jpg", //should be base64
-                        type: "Proteinas"
+                        type: "S",
+                        gender: null
+                    },
+                    {
+                        id: 2,
+                        type: "R",
+                        category: "Remeras",
+                        imageUrl: "img/shirt-rosa-mujer.jpg",
+                        brand: "Reebok",
+                        name: "Remera Dry Fit - Mujer",
+                        gender: "F",
+                        price: 10
+                    },
+                    {
+                        id: 3,
+                        type: "R",
+                        category: "Remeras",
+                        imageUrl: "img/shirt-azul-varon.jpeg",
+                        brand: "Nike",
+                        name: "Remera Dry Fit - Hombre",
+                        gender: "M",
+                        price: 10
+                    },
+                    {
+                        id: 4,
+                        type: "R",
+                        category: "Tops",
+                        imageUrl: "img/admitone-Top-rojo.png",
+                        brand: "Admitone",
+                        name: "Top Rojo de tiras finas",
+                        gender: "F",
+                        price: 10
+                    },
+                    {
+                        id: 5,
+                        type: "R",
+                        category: "Tops",
+                        imageUrl: "img/topNegro.png",
+                        brand: "Adidas",
+                        name: "Top Negro",
+                        gender: "F",
+                        price: 10
+                    },
+                    {
+                        id: 6,
+                        type: "R",
+                        category: "Shorts",
+                        imageUrl: "img/women-short-black.jpg",
+                        brand: "Nike",
+                        name: "Short Femenino Negro",
+                        gender: "F",
+                        price: 10
+                    },
+                    {
+                        id: 7,
+                        type: "R",
+                        category: "Shorts",
+                        imageUrl: "img/short-blakc-men.jpg",
+                        brand: "Nike",
+                        name: "Short Masculino Negro",
+                        gender: "M",
+                        price: 10
+                    },
+                    {
+                        id: 8,
+                        type: "R",
+                        category: "Calsas",
+                        imageUrl: "img/calsa-violeta.jpg",
+                        brand: "Reebok",
+                        name: "Calsa Femenina Violeta",
+                        gender: "F",
+                        price: 10
+                    },
+                    {
+                        id: 9,
+                        type: "R",
+                        category: "Calsas",
+                        imageUrl: "img/calsa-negra-varon.jpg",
+                        brand: "Reebok",
+                        name: "Calsa 3/4 Masculina ",
+                        gender: "M",
+                        price: 10
                     }],
                     trainers: [{
-                            name: "Juan Perez",
+                            id: 1,
+                            email: "Juan Perez",
                             age: "29 años",
-                            profileImage: "img/personal1.png",
+                            image: "img/personal1.png",
                             speciality: "Musculación en general",
                             price: 50
                         },
                         {
-                            name: "Federico Romo",
+                            id: 2,
+                            email: "Federico Romo",
                             age: "35 años",
-                            profileImage: "img/personal2.jpg",
+                            image: "img/personal2.jpg",
                             speciality: "Running",
                             price: 50
                         }
@@ -50,28 +143,87 @@ angular.module('gym2go.controllers', [])
                     lat: -34.616321,
                     lon: -58.368526,
                     activities: [{
-                        name: "Pase Gimnasio",
+                        id: 4,
+                        description: "Pase Gimnasio",
                         price: 50,
-                        hours: ["16:00", "18:30", "19:00"]
+                        schedules: ["16:00", "18:30", "19:00"]
                     }],
-                    products: [{
-                        name: "Pepa",
-                        description: "pega duro",
-                        price: 100,
-                        imageUrl: "img/Proteina1.jpg", //should be base64
-                        type: "Aminoacidos"
-                    }],
-                    trainers: [{
-                            name: "Carla Mi",
+                    products: [
+                        {
+                            name: "Pepa",
+                            description: "1.5Kg",
+                            price: 100,
+                            category: "Aminoacidos",
+                            brand: "Supp",
+                            imageUrl: "img/Proteina1.jpg", //should be base64
+                            type: "S",
+                            gender: null
+                        },
+                        {
+                            id: 3,
+                            type: "R",
+                            category: "Remeras",
+                            imageUrl: "img/shirt-azul-varon.jpeg",
+                            brand: "Nike",
+                            name: "Remera Dry Fit - Hombre",
+                            gender: "M",
+                            price: 10
+                        },
+                        {
+                            id: 4,
+                            type: "R",
+                            category: "Tops",
+                            imageUrl: "img/admitone-Top-rojo.png",
+                            brand: "Admitone",
+                            name: "Top Rojo de tiras finas",
+                            gender: "F",
+                            price: 10
+                        },
+                        {
+                            id: 5,
+                            type: "R",
+                            category: "Tops",
+                            imageUrl: "img/topNegro.png",
+                            brand: "Adidas",
+                            name: "Top Negro",
+                            gender: "F",
+                            price: 10
+                        },
+                        {
+                            id: 6,
+                            type: "R",
+                            category: "Shorts",
+                            imageUrl: "img/women-short-black.jpg",
+                            brand: "Nike",
+                            name: "Short Femenino Negro",
+                            gender: "F",
+                            price: 10
+                        },
+                        {
+                            id: 7,
+                            type: "R",
+                            category: "Shorts",
+                            imageUrl: "img/short-blakc-men.jpg",
+                            brand: "Nike",
+                            name: "Short Masculino Negro",
+                            gender: "M",
+                            price: 10
+                        }
+                        ],
+                    trainers: [
+                        {
+                            id: 3,
+                            email: "Carla Mi",
                             age: "31 años",
-                            profileImage: "img/personal3.jpeg",
+                            image: "img/personal3.jpeg",
                             speciality: "Boxeo",
                             price: 50
                         },
                         {
-                            name: "Lucas Gonzalez",
+                            id: 4,
+                            email: "Lucas Gonzalez",
                             age: "28 años",
-                            profileImage: "img/personal4.jpg",
+                            image: "img/personal4.jpg",
                             speciality: "Musculación en general",
                             price: 50
                         }
@@ -144,8 +296,10 @@ angular.module('gym2go.controllers', [])
 
         }
 
-        function getGroupIndex(groupName) {
-            for (var i = 0; i < $scope.groups.length; i++) {
+        function getGroupIndex(groupName) 
+        {
+            for (var i = 0; i < $scope.groups.length; i++) 
+            {
                 if ($scope.groups[i].name == groupName) {
                     return i;
                 }
@@ -153,25 +307,31 @@ angular.module('gym2go.controllers', [])
             return -1;
         }
 
-        function prepareGroups(gym) {
-            for (var i = 0; i < gym.products.length; i++) {
-                var groupIndex = getGroupIndex(gym.products[i].type);
-                var item = {
-                    img: gym.products[i].imageUrl,
-                    marca: gym.products[i].name,
-                    peso: gym.products[i].description,
-                    id: 1,
-                    precio: gym.products[i].price,
-                    cantidad: 0
-                }
+        function prepareGroups(gym)
+        {
+            var products = gym.products;
+            for (var i = 0; i < products.length; i++) 
+            {
+                if( products[i].type == "S" )
+                {
+                    var groupIndex = getGroupIndex(products[i].category);
+                    var item = {
+                        img:products[i].imageUrl,
+                        marca:products[i].brand,
+                        peso:products[i].description,
+                        id: products[i].id,
+                        precio: products[i].price,
+                        cantidad: 0
+                    }
 
-                if (groupIndex != -1) {
-                    $scope.groups[groupIndex].items.push(item)
-                } else {
-                    $scope.groups.push({
-                        name: gym.products[i].type,
-                        items: [item]
-                    })
+                    if (groupIndex != -1) {
+                        $scope.groups[groupIndex].items.push(item)
+                    } else {
+                        $scope.groups.push({
+                            name:products[i].category,
+                            items: [item]
+                        })
+                    }
                 }
             }
         }
@@ -411,10 +571,18 @@ angular.module('gym2go.controllers', [])
 
         function getGymActivities() {
             var activities = gymData.getActualGym().activities;
-            for (var i = 0; i < activities.length; i++) {
-                activities[i].hoursId = 0;
+            var transformedActivities = [];
+            for (var i = 0; i < activities.length; i++)
+            {
+                transformedActivities.push({
+                    name: activities[i].description,
+                    price: activities[i].price,
+                    hours: activities[i].schedules,
+                    hoursId: 0,
+                    id: activities[i].id
+                })
             }
-            return activities
+            return transformedActivities
         }
 
         function getGymName() {
@@ -435,7 +603,8 @@ angular.module('gym2go.controllers', [])
         $scope.addActivity = function(activity) {
             $ionicPopup.confirm({
                     title: 'Confirmar selección',
-                    template: '<div><p><strong>' + activity.name + '</strong></p>Precio: ' + activity.price + '<br>Fecha: ' + $scope.selectedDate +
+                    template: '<div><p><strong>' + activity.name + '</strong></p>Precio: '
+                     + activity.price + '<br>Fecha: ' + $scope.selectedDate +
                         '<br>Hora: ' + activity.hours[activity.hoursId] + 'hs</div>',
                     okText: 'Continuar',
                     cancelText: 'Cancelar'
@@ -480,7 +649,20 @@ angular.module('gym2go.controllers', [])
 
     //Personal Trainers
     .controller('PersonalCtrl', function($scope, $ionicPopup, $state, gymData, sharedCartService) {
-        $scope.trainers = gymData.getActualGym().trainers
+        var trainers =  gymData.getActualGym().trainers;
+        var transformedTrainers = [];
+        for( var i = 0; i < trainers.length; i++ )
+        {
+            transformedTrainers.push({
+                name: trainers[i].email,
+                price: trainers[i].price,
+                age: trainers[i].age,
+                speciality: trainers[i].speciality,
+                profileImage: trainers[i].image,
+                id: trainers[i].id
+            });
+        }
+        $scope.trainers = transformedTrainers;
         /*
          * if given group is the selected group, deselect it
          * else, select the given group
@@ -506,99 +688,61 @@ angular.module('gym2go.controllers', [])
         }
     })
 
-    .controller('RopaCtrl', function($scope, $state, $ionicPopup, sharedCartService, $ionicHistory) {
+    .controller('RopaCtrl', function($scope, $state, $ionicPopup, sharedCartService, $ionicHistory, gymData) {
         $scope.groups = [];
         $scope.totalAlquilados = 0;
         $scope.cantidadAlquilados = 0;
         $scope.itemsAlquilados = [];
         //global variable shared between different pages.
         var cart = sharedCartService.cart;
-
-        function makeGymGroups() {
-
+        makeGymGroups()
+        function makeGymGroups() 
+        {
+            var products =  gymData.getActualGym().products;
+            for( var i = 0; i < products.length; i++ )
+            {
+                if( products[i].type == "R" )
+                {
+                    registerProduct(products[i]);
+                }
+            }
         }
 
-        $scope.groups[0] = {
-            name: "Remeras",
-            items: []
-        };
-        $scope.groups[0].items[0] = {
-            img: "img/shirt-rosa-mujer.jpg",
-            marca: "Reebok",
-            name: "Remera Dry Fit - Mujer",
-            f: true,
-            id: 1,
-            precio: 10
-        };
-        $scope.groups[0].items[1] = {
-            img: "img/shirt-azul-varon.jpeg",
-            marca: "Nike",
-            name: "Remera Dry Fit - Hombre",
-            f: true,
-            id: 2,
-            precio: 10
-        };
+        function registerProduct( product )
+        {
+            var groupIndex = getGroupIndex(product.category);
+            var item = {
+                img: product.imageUrl,
+                marca: product.brand,
+                name: product.description,
+                f: product.gender == "F",
+                id: product.id,
+                precio: product.price
+            };
+            if( groupIndex == -1 )
+            {
+                $scope.groups.push(
+                {
+                    name: product.category, 
+                    items: [item]
+                });
+            }  else 
+            {
+                $scope.groups[groupIndex].items.push(item)
+            }
+        }
 
-        $scope.groups[1] = {
-            name: "Tops",
-            items: []
-        };
-        $scope.groups[1].items[0] = {
-            img: "img/admitone-Top-rojo.png",
-            marca: "Admitone",
-            name: "Top Rojo de tiras finas",
-            f: false,
-            id: 3,
-            precio: 10
-        };
-        $scope.groups[1].items[1] = {
-            img: "img/topNegro.png",
-            marca: "Adidas",
-            name: "Top Negro",
-            f: false,
-            id: 4,
-            precio: 10
-        };
-
-        $scope.groups[2] = {
-            name: "Shorts",
-            items: []
-        };
-        $scope.groups[2].items[0] = {
-            img: "img/women-short-black.jpg",
-            marca: "Nike",
-            name: "Short Femenino Negro",
-            id: 5,
-            precio: 10
-        };
-        $scope.groups[2].items[1] = {
-            img: "img/short-blakc-men.jpg",
-            marca: "Nike",
-            name: "Short Masculino Negro",
-            f: false,
-            id: 6,
-            precio: 10
-        };
-        $scope.groups[3] = {
-            name: "Calsas",
-            items: []
-        };
-        $scope.groups[3].items[0] = {
-            img: "img/calsa-violeta.jpg",
-            marca: "Reebok",
-            name: "Calsa Femenina Violeta",
-            f: true,
-            id: 7,
-            precio: 10
-        };
-        $scope.groups[3].items[1] = {
-            img: "img/calsa-negra-varon.jpg",
-            marca: "Reebok",
-            name: "Calsa 3/4 Masculina ",
-            f: true,
-            id: 8,
-            precio: 10
-        };
+        function getGroupIndex(groupName)
+        {
+            for( var i = 0; i < $scope.groups.length; i++ )
+            {
+                if( $scope.groups[i].name == groupName )
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
         /*
          * if given group is the selected group, deselect it
          * else, select the given group
