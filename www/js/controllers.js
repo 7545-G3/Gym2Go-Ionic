@@ -1,6 +1,35 @@
 angular.module('gym2go.controllers', [])
     .controller('GymsCtrl', function($scope, $state, $ionicPopup, $ionicLoading, gymData, $http) {
         $scope.gyms = []
+        $scope.activitiesFilter = []
+        $scope.data = {}
+        $scope.data.index = 0
+
+        $scope.createSelectList = function()
+        {
+            var gyms = gymData.getGymsList();
+            $scope.activitiesFilter = ["Todas las actividades"]
+            for( var i = 0; i < gyms.length; i ++ )
+            {
+                for( var j = 0; j < gyms[i].activities.length; j++)
+                {
+                    var name = gyms[i].activities[j].description
+                    var alreadyInList = false;
+                    for( var k = 0; k < $scope.activitiesFilter.length; k++)
+                    {
+                        if( name == $scope.activitiesFilter[k] )
+                        {
+                            alreadyInList = true
+                        }
+                    }
+                    if( !alreadyInList )
+                    {
+                        $scope.activitiesFilter.push(name)
+                    }
+                }
+            }
+        }
+
         $scope.successCallback = function(json) {
             var gyms = [{
                     _id: 1,
@@ -234,6 +263,7 @@ angular.module('gym2go.controllers', [])
                 }
             ]
             gymData.saveGyms(gyms)
+            $scope.createSelectList()
             $scope.gyms = gyms
         }
         
@@ -254,6 +284,31 @@ angular.module('gym2go.controllers', [])
             }
 
         }
+
+        $scope.onFilterGyms = function()
+        {
+            var gyms = gymData.getGymsList()
+            console.log("Data index is " + $scope.data.index)
+            if( $scope.data.index == 0 )
+            {
+                $scope.gyms = gyms
+                return
+            }
+            var activityName = $scope.activitiesFilter[$scope.data.index];
+            var filtered = [];
+            for( var i = 0; i < gyms.length; i ++ )
+            {
+                for( var j = 0; j < gyms[i].activities.length; j++)
+                {
+                    if(gyms[i].activities[j].description == activityName)
+                    {
+                        filtered.push(gyms[i]);
+                    }
+                }
+            }
+            $scope.gyms = filtered
+        }
+
         if (gymData.getGymsList().length == 0) 
         {
             var str = "api/gyms";
@@ -292,6 +347,7 @@ angular.module('gym2go.controllers', [])
 
         if (gymData.getGymsList().length == 0)
         {
+            var str = "api/gyms"
             $http.get(str).success($scope.successCallback).error($scope.errorCallback);
         }
 

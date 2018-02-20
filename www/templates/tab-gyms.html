@@ -12,7 +12,14 @@
         });
       });
       </script>
-  
+      <div class="list list-inset">
+        <label class="item item-input item-select">
+          <div class="input-label">Filtro</div>
+            <select ng-model="data.index" ng-options="activitiesFilter.indexOf(item) as item for item in activitiesFilter"
+             ng-change="onFilterGyms()">
+            </select>
+        </label>
+      </div>
       <ng-map id="map" center="-34.617751,-58.367862">
       
       <ion-list>
