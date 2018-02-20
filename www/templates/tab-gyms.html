@@ -24,7 +24,7 @@
       
       <ion-list>
         <div ng-repeat="gym in gyms">
-          <marker position="{{gym.lat}},{{gym.lon}}" title="{{gym.name}}" animation="DROP" on-click="map.showInfoWindow('{{gym.name}}')"
+          <marker position="{{gym.lat}},{{gym.lon}}" title="{{gym.name}}" animation="DROP" on-click="map.showInfoWindow('{{gym._id}}')"
            icon="{url:'img/gym-marker.png',scaledSize:[35,35],origin: [0,0],anchor: [17,35]}"></marker>
         </div>
       </ion-list>
@@ -48,8 +48,8 @@
       
       <ion-list>
         <div ng-repeat="gym in gyms">
-          <info-window id="{{gym.name}}">
-            <div><h3>{{gym.name}}</h3><p>Paseo Colon 720</p><p><b><a ng-click="onSelectedGym('{{gym.name}}')">Ver Actividades</a></b></p></div>
+          <info-window id="{{gym._id}}">
+            <div><h3>{{gym.name}}</h3><p>Paseo Colon 720</p><p><b><a ng-click="onSelectedGym('{{gym._id}}')">Ver Actividades</a></b></p></div>
           </info-window>
         </div>
       </ion-list>

@@ -13,6 +13,7 @@ angular.module('gym2go.controllers', [])
             {
                 for( var j = 0; j < gyms[i].activities.length; j++)
                 {
+                    if( !gyms[i].validated ) continue;
                     var name = gyms[i].activities[j].description
                     var alreadyInList = false;
                     for( var k = 0; k < $scope.activitiesFilter.length; k++)
@@ -31,252 +32,31 @@ angular.module('gym2go.controllers', [])
         }
 
         $scope.successCallback = function(json) {
-            var gyms = [{
-                    _id: 1,
-                    name: "Gym1",
-                    address: "Av. Paseo Colon 756",
-                    lat: -34.618634,
-                    lon: -58.369471,
-                    validated: true,
-                    activities: [
-                        {  
-                            _id: 1,
-                            description: "Pase Gimnasio",
-                            price: 50,
-                            schedules: ["16:00", "18:30"]
-                        },
-                        {
-                            _id: 2,
-                            description: "Clase MMA",
-                            price: 30,
-                            schedules: ["16:00", "19:00"]
-                        },
-                        {
-                            _id: 3,
-                            description: "Clase Zumba",
-                            price: 20,
-                            schedules: ["18:30", "19:00"]
-                        }
-                    ],
-                    products: [
-                    {
-                        _id: 1,
-                        name: "Pepa",
-                        description: "1Kg",
-                        price: 100,
-                        category: "Proteinas",
-                        brand: "Supp",
-                        imageUrl: "img/Proteina1.jpg", //should be base64
-                        type: "SUPPS",
-                        gender: null
-                    },
-                    {
-                        _id: 2,
-                        type: "CLO",
-                        category: "Remeras",
-                        imageUrl: "img/shirt-rosa-mujer.jpg",
-                        brand: "Reebok",
-                        name: "Remera Dry Fit - Mujer",
-                        gender: "F",
-                        price: 10
-                    },
-                    {
-                        _id: 3,
-                        type: "CLO",
-                        category: "Remeras",
-                        imageUrl: "img/shirt-azul-varon.jpeg",
-                        brand: "Nike",
-                        name: "Remera Dry Fit - Hombre",
-                        gender: "M",
-                        price: 10
-                    },
-                    {
-                        _id: 4,
-                        type: "CLO",
-                        category: "Tops",
-                        imageUrl: "img/admitone-Top-rojo.png",
-                        brand: "Admitone",
-                        name: "Top Rojo de tiras finas",
-                        gender: "F",
-                        price: 10
-                    },
-                    {
-                        _id: 5,
-                        type: "CLO",
-                        category: "Tops",
-                        imageUrl: "img/topNegro.png",
-                        brand: "Adidas",
-                        name: "Top Negro",
-                        gender: "F",
-                        price: 10
-                    },
-                    {
-                        _id: 6,
-                        type: "CLO",
-                        category: "Shorts",
-                        imageUrl: "img/women-short-black.jpg",
-                        brand: "Nike",
-                        name: "Short Femenino Negro",
-                        gender: "F",
-                        price: 10
-                    },
-                    {
-                        _id: 7,
-                        type: "CLO",
-                        category: "Shorts",
-                        imageUrl: "img/short-blakc-men.jpg",
-                        brand: "Nike",
-                        name: "Short Masculino Negro",
-                        gender: "M",
-                        price: 10
-                    },
-                    {
-                        _id: 8,
-                        type: "CLO",
-                        category: "Calsas",
-                        imageUrl: "img/calsa-violeta.jpg",
-                        brand: "Reebok",
-                        name: "Calsa Femenina Violeta",
-                        gender: "F",
-                        price: 10
-                    },
-                    {
-                        _id: 9,
-                        type: "CLO",
-                        category: "Calsas",
-                        imageUrl: "img/calsa-negra-varon.jpg",
-                        brand: "Reebok",
-                        name: "Calsa 3/4 Masculina ",
-                        gender: "M",
-                        price: 10
-                    }],
-                    trainers: [{
-                            _id: 1,
-                            email: "Juan Perez",
-                            age: "29 años",
-                            image: "img/personal1.png",
-                            speciality: "Musculación en general",
-                            price: 50
-                        },
-                        {
-                            _id: 2,
-                            email: "Federico Romo",
-                            age: "35 años",
-                            image: "img/personal2.jpg",
-                            speciality: "Running",
-                            price: 50
-                        }
-                    ]
-                },
-                {
-                    _id: 2,
-                    name: "Gym2",
-                    lat: -34.616321,
-                    lon: -58.368526,
-                    activities: [{
-                        _id: 4,
-                        description: "Pase Gimnasio",
-                        price: 50,
-                        schedules: ["16:00", "18:30", "19:00"]
-                    }],
-                    products: [
-                        {
-                            _id: 9,
-                            name: "Pepa",
-                            description: "1.5Kg",
-                            price: 100,
-                            category: "Aminoacidos",
-                            brand: "Supp",
-                            imageUrl: "img/Proteina1.jpg", //should be base64
-                            type: "SUPPS",
-                            gender: null
-                        },
-                        {
-                            _id: 3,
-                            type: "CLO",
-                            category: "Remeras",
-                            imageUrl: "img/shirt-azul-varon.jpeg",
-                            brand: "Nike",
-                            name: "Remera Dry Fit - Hombre",
-                            gender: "M",
-                            price: 10
-                        },
-                        {
-                            _id: 4,
-                            type: "CLO",
-                            category: "Tops",
-                            imageUrl: "img/admitone-Top-rojo.png",
-                            brand: "Admitone",
-                            name: "Top Rojo de tiras finas",
-                            gender: "F",
-                            price: 10
-                        },
-                        {
-                            _id: 5,
-                            type: "CLO",
-                            category: "Tops",
-                            imageUrl: "img/topNegro.png",
-                            brand: "Adidas",
-                            name: "Top Negro",
-                            gender: "F",
-                            price: 10
-                        },
-                        {
-                            _id: 6,
-                            type: "CLO",
-                            category: "Shorts",
-                            imageUrl: "img/women-short-black.jpg",
-                            brand: "Nike",
-                            name: "Short Femenino Negro",
-                            gender: "F",
-                            price: 10
-                        },
-                        {
-                            _id: 7,
-                            type: "CLO",
-                            category: "Shorts",
-                            imageUrl: "img/short-blakc-men.jpg",
-                            brand: "Nike",
-                            name: "Short Masculino Negro",
-                            gender: "M",
-                            price: 10
-                        }
-                        ],
-                    trainers: [
-                        {
-                            _id: 3,
-                            email: "Carla Mi",
-                            age: "31 años",
-                            image: "img/personal3.jpeg",
-                            speciality: "Boxeo",
-                            price: 50
-                        },
-                        {
-                            _id: 4,
-                            email: "Lucas Gonzalez",
-                            age: "28 años",
-                            image: "img/personal4.jpg",
-                            speciality: "Musculación en general",
-                            price: 50
-                        }
-                    ]
-                }
-            ]
-            gymData.saveGyms(gyms)
+            $ionicLoading.hide()
+            gymData.saveGyms(json)
             $scope.createSelectList()
-            $scope.gyms = gyms
+            for( var i = 0; i < json.length; i++ )
+            {
+                if( json[i].validated )
+                {
+                    $scope.gyms.push(json[i]);
+                }
+            }
         }
         
         $scope.errorCallback = function() {
+            $ionicLoading.hide()
             $ionicPopup.alert({
                 title: 'Error obteniendo gimnasios'
             }).then(function() {
 
             });
         }
-        $scope.onSelectedGym = function(gymName) {
+        $scope.onSelectedGym = function(gymName) 
+        {
+            console.log("Click id " + gymName)
             for (var index = 0; index < gymData.getGymsList().length; index++) {
-                if (gymData.getGymsList()[index].name == gymName) {
+                if (gymData.getGymsList()[index]._id == gymName) {
                     gymData.addActualWorkingGym(gymData.getGymsList()[index]);
                     $state.go("tab.activities");
                     break;
@@ -300,7 +80,8 @@ angular.module('gym2go.controllers', [])
             {
                 for( var j = 0; j < gyms[i].activities.length; j++)
                 {
-                    if(gyms[i].activities[j].description == activityName)
+                    if(gyms[i].activities[j].description == activityName
+                     && gyms[i].validated)
                     {
                         filtered.push(gyms[i]);
                     }
@@ -311,9 +92,13 @@ angular.module('gym2go.controllers', [])
 
         if (gymData.getGymsList().length == 0) 
         {
+            $ionicLoading.show({
+                template: 'Loading...'
+            })
             var str = "api/gyms";
             $http.get(str).success($scope.successCallback).error($scope.errorCallback);
         } else {
+            $ionicLoading.hide()
             $scope.gyms = gymData.getGymsList();
         }
 
@@ -329,10 +114,11 @@ angular.module('gym2go.controllers', [])
         $scope.data.index = 0;
         //global variable shared between different pages.
         var cart = sharedCartService.cart;
-        $scope.successCallback = function(json) {
+        $scope.successCallback = function(json) 
+        {
             gymData.saveGyms(json);
             $scope.gyms = getListOfGymNames();
-            $scope.groups = getListOfGroups(0);
+            $scope.groups = getListOfGroups($scope.gyms[0].index);
         }
         $scope.errorCallback = function() {
             $ionicPopup.alert({
@@ -343,19 +129,29 @@ angular.module('gym2go.controllers', [])
         }
 
         getListOfGymNames();
-        getListOfGroups(0);
 
-        if (gymData.getGymsList().length == 0)
+        if ( gymData.getGymsList().length == 0 )
         {
             var str = "api/gyms"
             $http.get(str).success($scope.successCallback).error($scope.errorCallback);
+        } else 
+        {
+            getListOfGroups($scope.gyms[0].index);
         }
 
         function getListOfGymNames() {
             $scope.gyms = [];
             var gyms = gymData.getGymsList();
-            for (var i = 0; i < gyms.length; i++) {
-                $scope.gyms.push(gyms[i].name);
+            for (var i = 0; i < gyms.length; i++) 
+            {
+                if( gyms[i].validated )
+                {
+                    $scope.gyms.push({
+                        name: gyms[i].name,
+                        index: i,
+                        id: gyms[i]._id
+                    });
+                }
             }
 
         }
@@ -376,6 +172,7 @@ angular.module('gym2go.controllers', [])
             var products = gym.products;
             for (var i = 0; i < products.length; i++) 
             {
+                console.log(products[i])
                 if( products[i].type == "SUPPS" )
                 {
                     var groupIndex = getGroupIndex(products[i].category);
@@ -400,17 +197,20 @@ angular.module('gym2go.controllers', [])
             }
         }
 
-        function getListOfGroups(indexGym) {
+        function getListOfGroups(indexGym)
+        {
             $scope.groups = [];
             var gyms = gymData.getGymsList();
-
-            if (gyms.length >= indexGym + 1 && indexGym >= 0) {
+            console.log("Index is " + indexGym);
+            if  (gyms.length >= indexGym + 1 && indexGym >= 0)
+            {
                 prepareGroups(gyms[indexGym])
             }
         }
 
-        $scope.unitChanged = function() {
-            getListOfGroups($scope.data.index)
+        $scope.unitChanged = function() 
+        {
+            getListOfGroups($scope.gyms[$scope.data.index].index)
         }
         /*
          * if given group is the selected group, deselect it
@@ -447,13 +247,13 @@ angular.module('gym2go.controllers', [])
                         var str = "api/users/" +  userData.get()._id + "/supplements";
                         $http.post(str, {
                                 supplement: id,
-                                gym: gymData.getGymsList()[$scope.data.index]._id,
+                                gym: gym.id,
                                 cant: quantity,
                                 qrImage: url
                         }).success(function(response)
                         {
                             $ionicLoading.hide()
-                            cart.add(response._id, url, name, price, quantity, gym);
+                            cart.add(response._id, url, name, price, quantity, gym.name);
                             var alertPopup = $ionicPopup.alert({
                                 title: 'Exito',
                                 template: 'Compra exitosa'
@@ -473,7 +273,7 @@ angular.module('gym2go.controllers', [])
         }
     })
 
-    .controller('CartCtrl', function($scope, $stateParams, $ionicPopup, sharedCartService) {
+    .controller('CartCtrl', function($scope, $stateParams, $ionicPopup, sharedCartService, userData, gymData) {
         // Loads the '$scope variable' cart i.e. 'HTML variable'
         $scope.$on('$stateChangeSuccess', function() {
             $scope.cart = sharedCartService.cart;
@@ -481,6 +281,30 @@ angular.module('gym2go.controllers', [])
             $scope.total_amount = sharedCartService.total_amount;
         });
 
+        console.log(userData.get())
+        var bought = userData.createUserBoughtItems(gymData.getGymsList())
+        if( bought != null )
+        { 
+            for( var i = 0; i < bought.passes.length; i++ )
+            {
+                var pass = bought.passes[i]
+                sharedCartService.cart.add(pass.id, 
+                    pass.qr, pass.activityName,
+                    pass.price, 1, 
+                    pass.gymName, 
+                    pass.description,
+                    pass.trainer,
+                    pass.clothes
+                )
+            }
+            for( var i = 0; i < bought.supplements.length; i++ )
+            {
+                var supp = bought.supplements[i];
+                sharedCartService.cart.add(
+                    supp.id, supp.qr, supp.name, supp.price, supp.quantity, supp.gymName);
+            }           
+        }
+        
         $scope.expandItem = function(item) {
             if ($scope.isItemExpanded(item)) {
                 $scope.shownItem = null;
@@ -523,7 +347,6 @@ angular.module('gym2go.controllers', [])
                             disableAnimate: true,
                             disableBack: true
                         });
-                        $ionicLoading.hide();
                         $state.go("tab.gyms")
                     }
                 }).error(function(response) { //if login failed
@@ -570,10 +393,14 @@ angular.module('gym2go.controllers', [])
                 });
         }
     })
-    .controller('AppCtrl', function($scope, $state, userData) {
-        $scope.logout = function() {
-            userData.set(null)
-            $state.go("login")
+    .controller('AppCtrl', function($scope, $state, userData, sharedCartService, gymData) {
+        $scope.logout = function() 
+        {
+            gymData.saveGyms([]);
+            sharedCartService.cart.resetBoughts()
+            userData.set(null);
+
+            $state.go("login");
         };
     })
 

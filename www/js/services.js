@@ -62,7 +62,7 @@ angular.module('gym2go.services', [])
       cartObj.gymPass = {
         gym: gymName,
         activity:  {
-                    id: activityId,
+                    _id: activityId,
                     name: activity,
                     price: price,
                     day: day,
@@ -76,7 +76,7 @@ angular.module('gym2go.services', [])
     cartObj.setGymPassTrainer = function(trainerId, trainerName, price)
     {
       cartObj.gymPass.trainer = {
-        id: trainerId,
+        _id: trainerId,
         name: trainerName,
         price: price
       } 
@@ -84,7 +84,7 @@ angular.module('gym2go.services', [])
 
     cartObj.addGymPassClothes = function( productId, clotheName, price )
     {
-      cartObj.gymPass.clothes.push({id: productId, name: clotheName, price: price})
+      cartObj.gymPass.clothes.push({_id: productId, name: clotheName, price: price})
     }
 
     cartObj.cart.add = function (id, image, name, price, qty,gym,date,pt,ropa) {
@@ -115,6 +115,14 @@ angular.module('gym2go.services', [])
         cartObj.total_amount += parseInt(price*qty);	//increase the cart amount
       //}
     };
+
+    cartObj.cart.resetBoughts = function()
+    {
+      cartObj.cart.length = 0;
+      cartObj.total_qty = 0;
+      cartObj.total_amount = 0;
+      cartObj.gymPass = null
+    }
 
     cartObj.cart.find = function (id) {
       var result = -1;
@@ -302,9 +310,14 @@ angular.module('gym2go.services', [])
     {
        var container = this;
        container.user = null;
+       container.createdItems = false;
 
        function setUser(user)
        {
+          if( user == null )
+          {
+            container.createadItems = false
+          }
           container.user = user;
        }
 
@@ -313,8 +326,169 @@ angular.module('gym2go.services', [])
           return container.user
        }
 
+       function getGym(gyms, gymId)
+       {
+          for( var i = 0; i < gyms.length; i++ )
+          {
+            if( gyms[i]._id == gymId )
+            {
+              return gyms[i]
+            }
+          }
+       }
+
+       function getActivity(gymPasses, gym)
+       {
+          for( var i = 0; i < gym.activities.length; i++ )
+          {
+            if( gym.activities[i]._id == gymPasses.activity._id )
+            {
+              return gym.activities[i]
+            }
+          }
+          return null
+       }
+
+       function getClothes(gymPasses, gym)
+       {
+         var list = []
+         for(var j = 0; j < gymPasses.clothes.length; j++)
+         {
+            for( var i = 0; i < gym.products.length; i++ )
+            {
+              if( gymPasses.clothes[i] == gym.products[i]._id )
+              {
+                list.push(gym.products[i])
+              }
+            }
+         }
+         return list;
+       }
+
+       function getTrainer(gymPasses, gym)
+       {
+          for( var i = 0; i < gym.trainers.length; i++ )
+          {
+            if( gym.trainers[i]._id == gymPasses.trainer )
+            {
+              return gym.trainers[i]
+            }
+          }
+          return null
+       }
+
+       function getSupplement(supplement, gym)
+       {
+          for( var i = 0; i < gym.products.length; i++ )
+          {
+            if( gym.products[i]._id == supplement )
+            {
+              return gym.products[i]
+            }
+          }
+       }
+      
+       function getActivityDescp(activity, gymPass)
+       {
+         return "Fecha y hora: " + gymPass.date
+       }
+
+        function getActivityPrice(activity)
+        {
+          return activity.price
+        }
+
+        function getClothesPrice(clothes)
+        {
+          var price = 0
+          for( var i = 0; i< clothes.length; i++)
+          {
+            price += clothes[i].price
+          }
+          return price;
+        }
+        function getTrainerPrice(trainer)
+        {
+          if( trainer == null )
+          {
+            return 0;
+          }
+          return trainer.price
+        }
+
+        function getClothesDesc(clothes)
+        {
+          if( clothes.length == 0 )
+          {
+            return "Ropa: -"
+          }
+          var list = "Ropa: "
+          for (var i = 0; i < sharedCartService.gymPass.clothes.length; i++) {
+              list += sharedCartService.gymPass.clothes[i].name + " / ";
+          }
+          return list.slice(0, list.length - 3);
+        }
+
+        function getTrainerDesc(trainer)
+        {
+          if (trainer != null) {
+            return "Personal trainer: " + trainer.name
+          }
+          return "Personal trainer: -"
+        }
+
+        function createUserBoughtItems(gyms)
+        {
+          if( container.createadItems || container.user == null)
+          {
+            return null
+          }
+          var bought = { passes: [], supplements: []}
+          var gymPasses =  container.user.gymPasses;
+          for(var i = 0; i < gymPasses.length; i++)
+          {
+              if( !gymPasses[i].gym || !gymPasses[i].activity ) continue;
+              var gym = getGym(gyms,gymPasses[i].gym);
+              var activity = gymPasses[i].activity;
+              var clothes = getClothes(gymPasses[i], gym);
+              var trainer = getTrainer(gymPasses[i], gym);
+              bought.passes.push({
+                id: gymPasses[i]._id,
+                gymName: gym.name,
+                activityName:  activity.description,
+                description: getActivityDescp(activity, gymPasses[i]),
+                clothes: getClothesDesc(clothes),
+                trainer: getTrainerDesc(trainer),
+                price: getActivityPrice(activity) 
+                    + getTrainerPrice(trainer) 
+                    + getClothesPrice(clothes),
+                    qr: gymPasses[i].qrImage
+              })
+
+          }
+          var supplements = container.user.supplements;
+          for(var i = 0; i < supplements.length; i++)
+          {
+             if( !supplements[i].gym || !supplements[i].supplement ) continue;
+             var gym = getGym(gyms,supplements[i].gym);
+             var supplement = supplements[i].supplement;
+             bought.supplements.push({
+               id: supplements[i]._id,
+               name: supplement.brand,
+               price: supplement.price,
+               quantity: supplements[i].cant,
+               gymName:  gym.name,
+               qr: supplements[i].qrImage
+             })
+
+          }
+          container.createadItems = true
+          return bought
+       }
+
        return {
          set: setUser,
-         get: getUser
+         get: getUser,
+         createUserBoughtItems: createUserBoughtItems
        }
     })

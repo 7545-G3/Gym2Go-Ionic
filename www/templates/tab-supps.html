@@ -7,7 +7,7 @@
     <div class="list list-inset">
       <label class="item item-input item-select">
         <div class="input-label">Gym</div>
-	<select ng-model="data.index" ng-options="gyms.indexOf(item) as item for item in gyms" ng-change="unitChanged()">
+	<select ng-model="data.index" ng-options="gyms.indexOf(item) as item.name for item in gyms" ng-change="unitChanged()">
   </select>
       </label>
     </div>
@@ -34,7 +34,7 @@
             </div>
           </div>
           <div class="col-md-2">
-            <button ng-click="addToCart(item.id,item.img,item.marca,item.precio,item.cantidad,gyms[data.index])"
+            <button ng-click="addToCart(item._id,item.img,item.marca,item.precio,item.cantidad,gyms[data.index])"
                     class="button button-positive button-block ">
               Comprar
             </button>
