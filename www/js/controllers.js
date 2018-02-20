@@ -391,7 +391,7 @@ angular.module('gym2go.controllers', [])
                         var str = "api/users/" + localStorage.getItem("idusuario") + "/supplements";
                         $http.post(str, {
                                 supplement: id,
-                                gym: $scope.gyms[$scope.data.index],
+                                gym: gymData.getGymsList()[$scope.data.index]._id,
                                 cant: quantity,
                                 qrImage: url
                         }).success(function(response)
@@ -864,7 +864,6 @@ angular.module('gym2go.controllers', [])
                         }).error( function(response)
                         {
                             $ionicLoading.hide()
-                            cart.add(response._id, url, name, price, quantity, gym);
                             var alertPopup = $ionicPopup.alert({
                                 title: 'Error',
                                 template: 'No se pudo realizar la compra'
