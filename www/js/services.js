@@ -298,3 +298,23 @@ angular.module('gym2go.services', [])
           toDataURL: toDataURL
         }
     })
+    .factory("userData", function()
+    {
+       var container = this;
+       container.user = null;
+
+       function setUser(user)
+       {
+          container.user = user;
+       }
+
+       function getUser()
+       {
+          return container.user
+       }
+
+       return {
+         set: setUser,
+         get: getUser
+       }
+    })

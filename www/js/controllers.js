@@ -321,7 +321,7 @@ angular.module('gym2go.controllers', [])
 
     //Proteinas
     .controller('SuppsCtrl', function($scope, Chats, $ionicPopup, 
-    sharedCartService, gymData,  $ionicLoading, base64, $http) {
+    sharedCartService, gymData,  $ionicLoading, base64, $http, userData) {
         $scope.groups = [];
         $scope.compras = {};
         $scope.gyms = [];
@@ -444,7 +444,7 @@ angular.module('gym2go.controllers', [])
 
                     base64.toDataURL("img/Barcode.jpg",function(url)
                     {
-                        var str = "api/users/" + localStorage.getItem("idusuario") + "/supplements";
+                        var str = "api/users/" +  userData.get()._id + "/supplements";
                         $http.post(str, {
                                 supplement: id,
                                 gym: gymData.getGymsList()[$scope.data.index]._id,
@@ -496,7 +496,7 @@ angular.module('gym2go.controllers', [])
         }
     })
 
-    .controller('LoginCtrl', function($scope, $ionicLoading, $state, $http, $ionicPopup, $ionicHistory) {
+    .controller('LoginCtrl', function($scope, $ionicLoading, $state, $http, $ionicPopup, $ionicHistory, userData) {
         $scope.loginData = {};
         $scope.doLogin = function() {
 
@@ -518,8 +518,7 @@ angular.module('gym2go.controllers', [])
                     } else {
                         $scope.user_details = response;
                         //stores the data in the session. if the user is logged in, then there is no need to show login again.
-                        localStorage.setItem('email', response.email);
-                        localStorage.setItem('idusuario', response._id);
+                        userData.set(response)
                         $ionicHistory.nextViewOptions({
                             disableAnimate: true,
                             disableBack: true
@@ -571,10 +570,9 @@ angular.module('gym2go.controllers', [])
                 });
         }
     })
-    .controller('AppCtrl', function($scope, $state) {
+    .controller('AppCtrl', function($scope, $state, userData) {
         $scope.logout = function() {
-            localStorage.removeItem('email');
-            localStorage.removeItem('idusuario');
+            userData.set(null)
             $state.go("login")
         };
     })
@@ -710,7 +708,8 @@ angular.module('gym2go.controllers', [])
         }
     })
 
-    .controller('RopaCtrl', function($scope, $state, $ionicPopup, sharedCartService, $ionicHistory, $http, $ionicLoading, gymData, base64) {
+    .controller('RopaCtrl', function($scope, $state, $ionicPopup, sharedCartService, 
+        $ionicHistory, $http, $ionicLoading, gymData, base64, userData) {
         $scope.groups = [];
         $scope.totalAlquilados = 0;
         $scope.cantidadAlquilados = 0;
@@ -888,7 +887,7 @@ angular.module('gym2go.controllers', [])
 
                     base64.toDataURL("img/Barcode.jpg",function(url)
                     {
-                        var str = "api/users/" + localStorage.getItem("idusuario") + "/gym-passes";
+                        var str = "api/users/" + userData.get()._id + "/gym-passes";
                         $http.post(str, {
                                 clothes: getClothesIds(),
                                 activity: getActivityId(),
