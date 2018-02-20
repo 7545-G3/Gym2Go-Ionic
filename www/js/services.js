@@ -57,11 +57,12 @@ angular.module('gym2go.services', [])
     cartObj.total_qty = 0;    // total cart qty
     cartObj.gymPass = null
 
-    cartObj.startNewGymPass = function(gymName,activity, price, day, time)
+    cartObj.startNewGymPass = function(gymName,activityId, activity, price, day, time)
     {
       cartObj.gymPass = {
         gym: gymName,
         activity:  {
+                    id: activityId,
                     name: activity,
                     price: price,
                     day: day,
@@ -72,17 +73,18 @@ angular.module('gym2go.services', [])
       }
     }
 
-    cartObj.setGymPassTrainer = function(trainerName, price)
+    cartObj.setGymPassTrainer = function(trainerId, trainerName, price)
     {
       cartObj.gymPass.trainer = {
+        id: trainerId,
         name: trainerName,
         price: price
       } 
     }
 
-    cartObj.addGymPassClothes = function( clotheName, price )
+    cartObj.addGymPassClothes = function( productId, clotheName, price )
     {
-      cartObj.gymPass.clothes.push({name: clotheName, price: price})
+      cartObj.gymPass.clothes.push({id: productId, name: clotheName, price: price})
     }
 
     cartObj.cart.add = function (id, image, name, price, qty,gym,date,pt,ropa) {
@@ -271,4 +273,28 @@ angular.module('gym2go.services', [])
         getGymsList: getGymsList,
         getActualGym: getActualGym
       }
+    })
+    .factory("base64",function(){
+      function toDataURL(src, callback, outputFormat) {
+            var img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.onload = function() {
+                var canvas = document.createElement('CANVAS');
+                var ctx = canvas.getContext('2d');
+                var dataURL;
+                canvas.height = this.naturalHeight;
+                canvas.width = this.naturalWidth;
+                ctx.drawImage(this, 0, 0);
+                dataURL = canvas.toDataURL(outputFormat);
+                callback(dataURL);
+            };
+            img.src = src;
+            if (img.complete || img.complete === undefined) {
+                img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+                img.src = src;
+            }
+        }
+        return {
+          toDataURL: toDataURL
+        }
     })
