@@ -93,7 +93,7 @@ angular.module('gym2go.controllers', [])
         if (gymData.getGymsList().length == 0) 
         {
             $ionicLoading.show({
-                template: 'Loading...'
+                template: 'Cargando...'
             })
             var str = "api/gyms";
             $http.get(str).success($scope.successCallback).error($scope.errorCallback);
@@ -172,7 +172,6 @@ angular.module('gym2go.controllers', [])
             var products = gym.products;
             for (var i = 0; i < products.length; i++) 
             {
-                console.log(products[i])
                 if( products[i].type == "SUPPS" )
                 {
                     var groupIndex = getGroupIndex(products[i].category);
@@ -240,7 +239,7 @@ angular.module('gym2go.controllers', [])
                 if (confirmed) 
                 {
                     $ionicLoading.show({
-                        template: 'Loading...'
+                        template: 'Cargando...'
                     });
 
                     base64.toDataURL("img/Barcode.jpg",function(url)
@@ -276,35 +275,36 @@ angular.module('gym2go.controllers', [])
 
     .controller('CartCtrl', function($scope, $stateParams, $ionicPopup, sharedCartService, userData, gymData) {
         // Loads the '$scope variable' cart i.e. 'HTML variable'
-        $scope.$on('$stateChangeSuccess', function() {
+        $scope.$on('$stateChangeSuccess', function()
+         {
+            var bought = userData.createUserBoughtItems(gymData.getGymsList())
+            if( bought != null )
+            { 
+                for( var i = 0; i < bought.passes.length; i++ )
+                {
+                    var pass = bought.passes[i]
+                    sharedCartService.cart.add(pass.id, 
+                        pass.qr, pass.activityName,
+                        pass.price, 1, 
+                        pass.gymName, 
+                        pass.description,
+                        pass.trainer,
+                        pass.clothes
+                    )
+                }
+                for( var i = 0; i < bought.supplements.length; i++ )
+                {
+                    var supp = bought.supplements[i];
+                    sharedCartService.cart.add(
+                        supp.id, supp.qr, supp.name, supp.price, supp.quantity, supp.gymName);
+                }           
+            }
             $scope.cart = sharedCartService.cart;
             $scope.total_qty = sharedCartService.total_qty;
             $scope.total_amount = sharedCartService.total_amount;
         });
 
-        console.log(userData.get())
-        var bought = userData.createUserBoughtItems(gymData.getGymsList())
-        if( bought != null )
-        { 
-            for( var i = 0; i < bought.passes.length; i++ )
-            {
-                var pass = bought.passes[i]
-                sharedCartService.cart.add(pass.id, 
-                    pass.qr, pass.activityName,
-                    pass.price, 1, 
-                    pass.gymName, 
-                    pass.description,
-                    pass.trainer,
-                    pass.clothes
-                )
-            }
-            for( var i = 0; i < bought.supplements.length; i++ )
-            {
-                var supp = bought.supplements[i];
-                sharedCartService.cart.add(
-                    supp.id, supp.qr, supp.name, supp.price, supp.quantity, supp.gymName);
-            }           
-        }
+        
         
         $scope.expandItem = function(item) {
             if ($scope.isItemExpanded(item)) {
@@ -426,6 +426,8 @@ angular.module('gym2go.controllers', [])
                     name: activities[i].description,
                     price: activities[i].price,
                     hours: activities[i].schedules,
+                    mapHours: {},
+                    availabeHours: [],
                     hoursId: 0,
                     _id: activities[i]._id
                 })
@@ -453,14 +455,14 @@ angular.module('gym2go.controllers', [])
                     title: 'Confirmar selección',
                     template: '<div><p><strong>' + activity.name + '</strong></p>Precio: '
                      + activity.price + '<br>Fecha: ' + $scope.selectedDate +
-                        '<br>Hora: ' + activity.hours[activity.hoursId] + 'hs</div>',
+                        '<br>Hora: ' + activity.availabeHours[activity.hoursId] + 'hs</div>',
                     okText: 'Continuar',
                     cancelText: 'Cancelar'
                 })
                 .then(function(confirmed) {
                     if (confirmed) {
                         //TODO add to cart the activty and hour
-                        sharedCartService.startNewGymPass(getGymName(),activity._id, activity.name, activity.price, $scope.selectedDate, activity.hours[activity.hoursId])
+                        sharedCartService.startNewGymPass(getGymName(),activity._id, activity.name, activity.price, $scope.selectedDate, activity.availabeHours[activity.hoursId])
                         $scope.goToPersonalTrainerList();
                     }
                 })
@@ -482,15 +484,90 @@ angular.module('gym2go.controllers', [])
             inputDate: new Date(), //Optional
             titleLabel: 'Select a Date',
             mondayFirst: true, //Optional
-            disableWeekdays: [0], //Optional
+            disableWeekdays: [0,6], //Optional
             closeOnSelect: false, //Optional
             templateType: 'popup',
             setLabel: 'Elegir',
             closeLabel: 'Cerrar'
         };
 
-        $scope.openDatePicker = function() {
-            ionicDatePicker.openDatePicker(ipObj1);
+        function getWeekDaysDisabled(activity)
+        {
+            var days =
+            {
+                "Domingo" : 0,
+                "Lunes" : 1,
+                "Martes" : 2,
+                "Miercoles" : 3,
+                "Jueves" : 4,
+                "Viernes" :5,
+                "Sabado": 6
+
+            }
+            var schedules = activity.hours;
+            var mapHours = {}
+            var disabled = [0,1,2,3,4,5,6];
+            for(var i = 0; i < activity.hours.length; i++)
+            {
+                var split = activity.hours[i].split(" ");
+                if( split.length != 2 ) continue;
+                var day = days[split[0]];
+                var hour = split[1];
+                if( !day ) continue;
+                var index = disabled.indexOf(day);
+                if (index !== -1) disabled.splice(index, 1);
+                if( mapHours[day] )
+                {
+                    mapHours[day].push(hour);
+                } else 
+                {
+                    mapHours[day] = [hour];
+                }
+            }
+            activity.mapHours = mapHours;
+            return disabled
+        }   
+
+        function getOptionsFor(activity)
+        {
+            var today = new Date()
+            var weekDaysDisabled = getWeekDaysDisabled(activity);
+            
+            while ( weekDaysDisabled.length != 7 &&  weekDaysDisabled.indexOf(today.getDay()) != -1 )
+            {
+                today = new Date(today.getTime() + 86400000);
+            }
+            
+            return {
+                callback: function(val) { //Mandatory
+
+                    var date = new Date(val);
+    
+                    var day = date.getDate();
+                    var month = date.getMonth() + 1;
+                    var year = date.getFullYear();
+                    var dayOfWeek = date.getDay();
+                    
+                    activity.availabeHours = activity.mapHours[dayOfWeek];
+                    //TODO activity hours list
+
+                    $scope.selectedDate = day + '/' + month + '/' + year;
+                },
+                from: new Date(), //Optional
+                inputDate: today, //Optional
+                titleLabel: 'Seleccione una fecha',
+                mondayFirst: true, //Optional
+                disableWeekdays: weekDaysDisabled, //Optional
+                closeOnSelect: false, //Optional
+                templateType: 'popup',
+                setLabel: 'Elegir',
+                closeLabel: 'Cerrar'
+            }
+        }
+
+        $scope.openDatePicker = function(activity) 
+        {
+            ionicDatePicker.openDatePicker(getOptionsFor(activity));
         };
 
     })
@@ -502,7 +579,7 @@ angular.module('gym2go.controllers', [])
         for( var i = 0; i < trainers.length; i++ )
         {
             transformedTrainers.push({
-                name: trainers[i].email,
+                name: trainers[i].name,
                 price: trainers[i].price,
                 age: trainers[i].age,
                 speciality: trainers[i].speciality,
@@ -612,18 +689,19 @@ angular.module('gym2go.controllers', [])
             // Appending dialog to document.body to cover sidenav in docs app
             var genero = item.f ? 'una ' : 'un ';
             var genero2 = item.f ? 'la ' : 'el ';
-            var item = item;
+            var image = item.img;
+            var name = item.name;
             var confirmPopup = $ionicPopup.confirm({
                 title: '',
-                template: '<div><div> <img ng-src="' + item.img + '" style="width:100%"/> </div> <div>' +
-                    ' Desea alquilar ' + genero + '<b>' + item.name + '</b> para su actividad? </div></div>',
+                template: '<div><div> <img ng-src="' + image + '" style="width:100%"/> </div> <div>' +
+                    ' Desea alquilar ' + genero + '<b>' + name + '</b> para su actividad? </div></div>',
                 okText: 'Alquilar',
                 cancelText: 'Cancelar'
             });
 
             confirmPopup.then(function(res) {
                 if (res) {
-                    sharedCartService.addGymPassClothes(item._id, item.name, item.precio)
+                    sharedCartService.addGymPassClothes(item._id, name, item.precio)
                     $scope.cantidadAlquilados = $scope.cantidadAlquilados + 1;
                     $scope.totalAlquilados = $scope.totalAlquilados + item.precio;
                     $scope.itemsAlquilados.push(item);
@@ -715,6 +793,9 @@ angular.module('gym2go.controllers', [])
 
                     base64.toDataURL("img/Barcode.jpg",function(url)
                     {
+                        $ionicLoading.show({
+                            template: "Cargando..."
+                        })
                         var str = "api/users/" + userData.get()._id + "/gym-passes";
                         $http.post(str, {
                                 clothes: getClothesIds(),

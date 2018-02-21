@@ -23,7 +23,7 @@
                   ng-show="isActivityShown(activity)">
           <div class="row">
             <div class="col">
-              <a class="button button-outline icon-left ion-calendar button-dark float-left" ng-click="openDatePicker()">Fecha</a>
+              <a class="button button-outline icon-left ion-calendar button-dark float-left" ng-click="openDatePicker(activity)">Fecha</a>
             </div>
             <div class="col">
               <ion-label class="float-right" ng-if="selectedDate"><b>{{selectedDate}}</b></ion-label>
@@ -34,7 +34,7 @@
             <div class="input-label">
               <b>Hora:</b>
             </div>
-            <select name="hora" ng-model="activity.hoursId" ng-options="activity.hours.indexOf(item) as item for item in activity.hours">
+            <select name="hora" ng-model="activity.hoursId" ng-options="activity.availabeHours.indexOf(item) as item for item in activity.availabeHours">
             </select>
             </label>
           </div>
