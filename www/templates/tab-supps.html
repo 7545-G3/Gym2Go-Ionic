@@ -27,7 +27,8 @@
             <div class="col-md-6">
               <img ng-src="{{item.img}}" style="width:80%;height:80%;"/></div>
             <div class="col-md-4">
-              {{item.marca}}<br/>
+              <strong>{{item.nombre}}</strong><br/>
+              Marca:{{item.marca}}<br/>
               Peso: {{item.peso}}<br/>
               Precio: ${{item.precio}}
               <input type="number" ng-model="item.cantidad" min="0" max="10">

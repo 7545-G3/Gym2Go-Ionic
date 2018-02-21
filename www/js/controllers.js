@@ -177,11 +177,12 @@ angular.module('gym2go.controllers', [])
                 {
                     var groupIndex = getGroupIndex(products[i].category);
                     var item = {
-                        img:products[i].imageUrl,
+                        img:products[i].image,
                         marca:products[i].brand,
                         peso:products[i].description,
                         _id: products[i]._id,
                         precio: products[i].price,
+                        nombre: products[i].name,
                         cantidad: 0
                     }
 
@@ -560,7 +561,7 @@ angular.module('gym2go.controllers', [])
         {
             var groupIndex = getGroupIndex(product.category);
             var item = {
-                img: product.imageUrl,
+                img: product.image,
                 marca: product.brand,
                 name: product.name,
                 f: product.gender == "F",
