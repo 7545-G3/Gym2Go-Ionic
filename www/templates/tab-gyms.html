@@ -4,14 +4,6 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
-    <script>
-      app.module('ngMap').run(function($rootScope, NgMap) {        
-        NgMap.getMap().then(function(map) 
-        {
-          $rootScope.map = map;
-        });
-      });
-      </script>
       <div class="">
         <label class="item item-input item-select">
           <div class="input-label">Filtro</div>
@@ -23,8 +15,8 @@
       <ng-map id="map" center="-34.617751,-58.367862">
       
       <ion-list>
-        <div ng-repeat="gym in gyms">
-          <marker position="{{gym.lat}},{{gym.lon}}" title="{{gym.name}}" animation="DROP" on-click="map.showInfoWindow('{{gym._id}}')"
+        <div ng-repeat="gym in gyms track by gym._id">
+          <marker position="{{gym.lat}},{{gym.lon}}" title="{{gym.name}}" animation="DROP" on-click="showInfo(event,gym)"
            icon="{url:'img/gym-marker.png',scaledSize:[35,35],origin: [0,0],anchor: [17,35]}"></marker>
         </div>
       </ion-list>
@@ -46,13 +38,11 @@
       <marker position="-34.625467,-58.368945" animation="DROP" title="Gym5" on-click="map.showInfoWindow('bar5')" 
       icon="{url:'img/gym-marker.png',scaledSize:[35,35],origin: [0,0],anchor: [17,35]}"></marker>-->
       
-      <ion-list>
-        <div ng-repeat="gym in gyms">
-          <info-window id="{{gym._id}}">
-            <div><h3>{{gym.name}}</h3><p>{{gym.address}}</p><p><b><a ng-click="onSelectedGym('{{gym._id}}')">Ver Actividades</a></b></p></div>
-          </info-window>
-        </div>
-      </ion-list>
+  
+      <info-window id="infoWindow" >
+        <div  ng-non-bindable=""><h3>{{infoGym.name}}</h3><p>{{infoGym.address}}</p><p><b><a ng-click="onSelectedGym('{{infoGym._id}}')">Ver Actividades</a></b></p></div>
+      </info-window>
+        
       <!--<info-window id="bar1">
         <div ng-non-bindable><h3>McGym</h3><p>Paseo Colon 720</p><p><b><a href="#/tab/McGym">Ver Actividades</a></b></p></div>
       </info-window>

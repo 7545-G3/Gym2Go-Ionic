@@ -1,10 +1,11 @@
 angular.module('gym2go.controllers', [])
-    .controller('GymsCtrl', function($scope, $state, $ionicPopup, $ionicLoading, gymData, $http) {
+    .controller('GymsCtrl', function($scope, $state, $ionicPopup, $ionicLoading, gymData, $http, NgMap) {
         $scope.gyms = []
         $scope.activitiesFilter = []
         $scope.data = {}
         $scope.data.index = 0
-
+        $scope.infoGym = {}
+        var vm = this;
         $scope.createSelectList = function()
         {
             var gyms = gymData.getGymsList();
@@ -33,6 +34,7 @@ angular.module('gym2go.controllers', [])
 
         $scope.successCallback = function(json) {
             $ionicLoading.hide()
+            $scope.data.index = 0
             gymData.saveGyms(json)
             $scope.createSelectList()
             for( var i = 0; i < json.length; i++ )
@@ -52,7 +54,8 @@ angular.module('gym2go.controllers', [])
 
             });
         }
-        $scope.onSelectedGym = function(gymName) 
+        
+        function onSelectedGym(gymName) 
         {
             console.log("Click id " + gymName)
             for (var index = 0; index < gymData.getGymsList().length; index++) {
@@ -62,36 +65,54 @@ angular.module('gym2go.controllers', [])
                     break;
                 }
             }
-
         }
+        vm.onSelectedGym = onSelectedGym
+        $scope.onSelectedGym = onSelectedGym
 
         $scope.onFilterGyms = function()
         {
-            var gyms = gymData.getGymsList()
+            var allGyms = gymData.getGymsList()
             if( $scope.data.index == 0 )
             {
-                $scope.gyms = [];
-                for( var j = 0; j < gyms.length; j++)
+                $scope.allGyms = [];
+                for( var j = 0; j < allGyms.length; j++)
                 {
-                    if( gyms[j].validated )
-                        $scope.gyms.push(gyms[j])
+                    if( allGyms[j].validated )
+                        $scope.gyms.push(allGyms[j])
                 }
                 return
             }
             var activityName = $scope.activitiesFilter[$scope.data.index];
             var filtered = [];
-            for( var i = 0; i < gyms.length; i ++ )
+            for( var i = 0; i < allGyms.length; i ++ )
             {
-                if( !gyms[i].validated ) continue;
-                for( var j = 0; j < gyms[i].activities.length; j++)
+                if( !allGyms[i].validated ) continue;
+                for( var j = 0; j < allGyms[i].activities.length; j++)
                 {
-                    if(gyms[i].activities[j].description == activityName)
+                    if(allGyms[i].activities[j].description == activityName)
                     {
-                        filtered.push(gyms[i]);
+                        filtered.push(allGyms[i]);
+                        break;
                     }
                 }
             }
+            console.log("previoues");
+            console.log($scope.gyms )
             $scope.gyms = filtered
+            console.log("actual");
+            console.log($scope.gyms )
+        }
+
+        NgMap.getMap().then(function(map) 
+        {
+          $scope.map = map;
+        });
+
+        $scope.showInfo = function(evetn, gym)
+        {
+            $scope.infoGym = gym;
+            console.log(gym)
+            $scope.map.showInfoWindow('infoWindow', this)
         }
 
         $scope.$on('$ionicView.beforeEnter', function() 
@@ -100,25 +121,13 @@ angular.module('gym2go.controllers', [])
             $scope.activitiesFilter = []
             $scope.data = {}
             $scope.data.index = 0
-            if (gymData.getGymsList().length == 0) 
-            {
-                $ionicLoading.show({
-                    template: 'Cargando...'
-                })
-                var str = "api/gyms";
-                $http.get(str).success($scope.successCallback).error($scope.errorCallback);
-            } else {
-                $ionicLoading.hide()
-                var gyms = gymData.getGymsList();
-                for( var i = 0; i < gyms.length; i++ )
-                {
-                    if( gyms[i].validated )
-                    {
-                        $scope.gyms.push(gyms[i]);
-                    }
-                }
-                $scope.createSelectList()
-            }
+           
+            $ionicLoading.show({
+                template: 'Cargando...'
+            })
+            var str = "api/gyms";
+            $http.get(str).success($scope.successCallback).error($scope.errorCallback);
+    
          })
       
 
