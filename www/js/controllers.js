@@ -68,20 +68,24 @@ angular.module('gym2go.controllers', [])
         $scope.onFilterGyms = function()
         {
             var gyms = gymData.getGymsList()
-            console.log("Data index is " + $scope.data.index)
             if( $scope.data.index == 0 )
             {
-                $scope.gyms = gyms
+                $scope.gyms = [];
+                for( var j = 0; j < gyms.length; j++)
+                {
+                    if( gyms[j].validated )
+                        $scope.gyms.push(gyms[j])
+                }
                 return
             }
             var activityName = $scope.activitiesFilter[$scope.data.index];
             var filtered = [];
             for( var i = 0; i < gyms.length; i ++ )
             {
+                if( !gyms[i].validated ) continue;
                 for( var j = 0; j < gyms[i].activities.length; j++)
                 {
-                    if(gyms[i].activities[j].description == activityName
-                     && gyms[i].validated)
+                    if(gyms[i].activities[j].description == activityName)
                     {
                         filtered.push(gyms[i]);
                     }
@@ -90,17 +94,33 @@ angular.module('gym2go.controllers', [])
             $scope.gyms = filtered
         }
 
-        if (gymData.getGymsList().length == 0) 
+        $scope.$on('$ionicView.beforeEnter', function() 
         {
-            $ionicLoading.show({
-                template: 'Cargando...'
-            })
-            var str = "api/gyms";
-            $http.get(str).success($scope.successCallback).error($scope.errorCallback);
-        } else {
-            $ionicLoading.hide()
-            $scope.gyms = gymData.getGymsList();
-        }
+            $scope.gyms = []
+            $scope.activitiesFilter = []
+            $scope.data = {}
+            $scope.data.index = 0
+            if (gymData.getGymsList().length == 0) 
+            {
+                $ionicLoading.show({
+                    template: 'Cargando...'
+                })
+                var str = "api/gyms";
+                $http.get(str).success($scope.successCallback).error($scope.errorCallback);
+            } else {
+                $ionicLoading.hide()
+                var gyms = gymData.getGymsList();
+                for( var i = 0; i < gyms.length; i++ )
+                {
+                    if( gyms[i].validated )
+                    {
+                        $scope.gyms.push(gyms[i]);
+                    }
+                }
+                $scope.createSelectList()
+            }
+         })
+      
 
     })
 
@@ -114,6 +134,7 @@ angular.module('gym2go.controllers', [])
         $scope.data.index = 0;
         //global variable shared between different pages.
         var cart = sharedCartService.cart;
+
         $scope.successCallback = function(json) 
         {
             gymData.saveGyms(json);
@@ -126,17 +147,6 @@ angular.module('gym2go.controllers', [])
             }).then(function() {
 
             });
-        }
-
-        getListOfGymNames();
-
-        if ( gymData.getGymsList().length == 0 )
-        {
-            var str = "api/gyms"
-            $http.get(str).success($scope.successCallback).error($scope.errorCallback);
-        } else 
-        {
-            getListOfGroups($scope.gyms[0].index);
         }
 
         function getListOfGymNames() {
@@ -271,12 +281,44 @@ angular.module('gym2go.controllers', [])
                 }
             })
         }
+
+        $scope.$on('$ionicView.beforeEnter', function() {
+            getListOfGymNames();
+
+            if ( gymData.getGymsList().length == 0 )
+            {
+                var str = "api/gyms"
+                $http.get(str).success($scope.successCallback).error($scope.errorCallback);
+            } else 
+            {
+                getListOfGroups($scope.gyms[0].index);
+            }
+        });
     })
 
     .controller('CartCtrl', function($scope, $stateParams, $ionicPopup, sharedCartService, userData, gymData) {
         // Loads the '$scope variable' cart i.e. 'HTML variable'
-        $scope.$on('$stateChangeSuccess', function()
-         {
+
+        $scope.cart = sharedCartService.cart;
+        $scope.total_qty = sharedCartService.total_qty;
+        $scope.total_amount = sharedCartService.total_amount;
+
+        $scope.expandItem = function(item) {
+            if ($scope.isItemExpanded(item)) {
+                $scope.shownItem = null;
+            } else {
+                $scope.shownItem = item;
+            }
+        };
+        $scope.isItemExpanded = function(item) {
+            return $scope.shownItem === item;
+        };
+        $scope.fromActivity = function() {
+            return $stateParams.fromActivity === "true"
+        }
+
+        $scope.$on('$ionicView.beforeEnter', function() 
+        {
             var bought = userData.createUserBoughtItems(gymData.getGymsList())
             if( bought != null )
             { 
@@ -299,34 +341,14 @@ angular.module('gym2go.controllers', [])
                         supp.id, supp.qr, supp.name, supp.price, supp.quantity, supp.gymName);
                 }           
             }
-            $scope.cart = sharedCartService.cart;
-            $scope.total_qty = sharedCartService.total_qty;
-            $scope.total_amount = sharedCartService.total_amount;
         });
-
-        
-        
-        $scope.expandItem = function(item) {
-            if ($scope.isItemExpanded(item)) {
-                $scope.shownItem = null;
-            } else {
-                $scope.shownItem = item;
-            }
-        };
-        $scope.isItemExpanded = function(item) {
-            return $scope.shownItem === item;
-        };
-        $scope.fromActivity = function() {
-            return $stateParams.fromActivity === "true"
-        }
     })
 
     .controller('LoginCtrl', function($scope, $ionicLoading, $state, $http, $ionicPopup, $ionicHistory, userData) {
         $scope.loginData = {};
         $scope.doLogin = function() {
-
             $ionicLoading.show({
-                template: 'Loading...'
+                template: 'Cargando...'
             });
             var str = "api/users/login";
             $http.post(str, {
@@ -414,9 +436,6 @@ angular.module('gym2go.controllers', [])
             $state.go("tab.personalTrainerList")
         }
 
-        $scope.activities = getGymActivities()
-        $scope.gymName = getGymName()
-
         function getGymActivities() {
             var activities = gymData.getActualGym().activities;
             var transformedActivities = [];
@@ -453,7 +472,7 @@ angular.module('gym2go.controllers', [])
         $scope.addActivity = function(activity) {
             $ionicPopup.confirm({
                     title: 'Confirmar selección',
-                    template: '<div><p><strong>' + activity.name + '</strong></p>Precio: '
+                    template: '<div><p><strong>' + activity.name + '</strong></p>Precio: $'
                      + activity.price + '<br>Fecha: ' + $scope.selectedDate +
                         '<br>Hora: ' + activity.availabeHours[activity.hoursId] + 'hs</div>',
                     okText: 'Continuar',
@@ -570,24 +589,16 @@ angular.module('gym2go.controllers', [])
             ionicDatePicker.openDatePicker(getOptionsFor(activity));
         };
 
+        $scope.$on('$ionicView.beforeEnter', function() 
+        {
+            $scope.activities = getGymActivities()
+            $scope.gymName = getGymName()
+        });
+
     })
 
     //Personal Trainers
     .controller('PersonalCtrl', function($scope, $ionicPopup, $state, gymData, sharedCartService) {
-        var trainers =  gymData.getActualGym().trainers;
-        var transformedTrainers = [];
-        for( var i = 0; i < trainers.length; i++ )
-        {
-            transformedTrainers.push({
-                name: trainers[i].name,
-                price: trainers[i].price,
-                age: trainers[i].age,
-                speciality: trainers[i].speciality,
-                profileImage: trainers[i].image,
-                _id: trainers[i]._id
-            });
-        }
-        $scope.trainers = transformedTrainers;
         /*
          * if given group is the selected group, deselect it
          * else, select the given group
@@ -611,6 +622,24 @@ angular.module('gym2go.controllers', [])
         $scope.goToClothes = function() {
             $state.go("tab.clothes")
         }
+
+        $scope.$on('$ionicView.beforeEnter', function() 
+        {
+            var trainers =  gymData.getActualGym().trainers;
+            var transformedTrainers = [];
+            for( var i = 0; i < trainers.length; i++ )
+            {
+                transformedTrainers.push({
+                    name: trainers[i].name,
+                    price: trainers[i].price,
+                    age: trainers[i].age,
+                    speciality: trainers[i].specialty,
+                    profileImage: trainers[i].image,
+                    _id: trainers[i]._id
+                });
+            }
+            $scope.trainers = transformedTrainers;
+        })
     })
 
     .controller('RopaCtrl', function($scope, $state, $ionicPopup, sharedCartService, 
@@ -621,7 +650,12 @@ angular.module('gym2go.controllers', [])
         $scope.itemsAlquilados = [];
         //global variable shared between different pages.
         var cart = sharedCartService.cart;
-        makeGymGroups()
+        $scope.$on('$ionicView.beforeEnter', function() 
+        {
+            makeGymGroups()
+        })
+       
+        
         function makeGymGroups() 
         {
             var products =  gymData.getActualGym().products;
@@ -741,7 +775,7 @@ angular.module('gym2go.controllers', [])
 
         function getActivtyDescription() {
             var activity = sharedCartService.gymPass.activity;
-            return "Fecha y hora: " + activity.day + " a las " + activity.time + "hs"
+            return activity.day + " a las " + activity.time + "hs"
         }
 
         function getPersonalTrainerId()
@@ -807,19 +841,20 @@ angular.module('gym2go.controllers', [])
                         }).success(function(response)
                         {
                             $ionicLoading.hide()
-                             cart.add(response._id, url, getActivityName(), calculatePassPrice(), 1, getGymName(), getActivtyDescription(),
+                             cart.add(response._id, url, getActivityName(), calculatePassPrice(), 1, getGymName(), "Fecha y hora: " + getActivtyDescription(),
                                     "Personal trainer: " + getPersonalTrainer(), "Ropa: " + getClothesList());
                             var alertPopup = $ionicPopup.alert({
                                 title: 'Exito',
                                 template: 'Compra exitosa'
                             }).then(function(){
                                 $ionicHistory.clearHistory();
-                                $state.go('tab.cart', {
-                                    fromActivity: true
-                                });
                                 $scope.itemsAlquilados = [];
                                 $scope.cantidadAlquilados = 0;
                                 $scope.totalAlquilados = 0;
+                                $state.go("tab.cart", {
+                                    fromActivity: true
+                                });
+                                
                                 //Add to cart the activity
 
                                
@@ -833,10 +868,7 @@ angular.module('gym2go.controllers', [])
                                 template: 'No se pudo realizar la compra'
                             });
                         });
-                    })
-
-
-                   
+                    })    
                 }
             })
         }

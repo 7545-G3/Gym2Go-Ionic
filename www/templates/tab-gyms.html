@@ -49,7 +49,7 @@
       <ion-list>
         <div ng-repeat="gym in gyms">
           <info-window id="{{gym._id}}">
-            <div><h3>{{gym.name}}</h3><p>Paseo Colon 720</p><p><b><a ng-click="onSelectedGym('{{gym._id}}')">Ver Actividades</a></b></p></div>
+            <div><h3>{{gym.name}}</h3><p>{{gym.address}}</p><p><b><a ng-click="onSelectedGym('{{gym._id}}')">Ver Actividades</a></b></p></div>
           </info-window>
         </div>
       </ion-list>
